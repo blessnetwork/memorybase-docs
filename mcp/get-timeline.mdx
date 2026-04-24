@@ -1,0 +1,23 @@
+---
+title: "get_timeline"
+description: "Browse your activity timeline by day or week."
+---
+
+Returns timeline entries summarizing your AI activity, organized by day or week.
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `cursor` | string | No | Pagination cursor for loading older entries |
+| `granularity` | string | No | `day` (default) or `week` |
+
+## What It Returns
+
+A list of timeline entries, each summarizing the conversations and topics you engaged with during that period.
+
+## When Your Assistant Uses This
+
+- You ask "what did I work on last week?"
+- The assistant needs to understand your recent activity patterns
+- You want a summary of your AI usage over time

@@ -1,0 +1,50 @@
+---
+title: "search"
+description: "Search across your conversations and projects using natural language."
+---
+
+```bash
+memorybase search <query> [options]
+```
+
+Runs a semantic search over your entire MemoryBase. This is the same search that powers the browser extension's context injection -- it finds the most relevant conversation snippets and project layers based on meaning, not just keywords.
+
+## Arguments
+
+| Argument | Required | Description |
+|---|---|---|
+| `query` | Yes | What you want to search for (natural language) |
+
+## Options
+
+| Option | Description |
+|---|---|
+| `--top-layers <n>` | Maximum number of matched layers to return (1-10) |
+| `--pinned <ids>` | Comma-separated project IDs to always include in results |
+| `--format <fmt>` | Output format: `table` (default), `json`, or `markdown` |
+
+## Examples
+
+**Basic search:**
+
+```bash
+memorybase search "react authentication flow"
+```
+
+**Get results as JSON (useful for piping to other tools):**
+
+```bash
+memorybase search "database schema" --format json
+```
+
+**Limit to top 3 results:**
+
+```bash
+memorybase search "API error handling" --top-layers 3
+```
+
+**Pin a specific project to always appear in results:**
+
+```bash
+memorybase search "deployment" --pinned proj-abc123,proj-def456
+```

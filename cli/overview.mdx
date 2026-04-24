@@ -1,0 +1,63 @@
+---
+title: "CLI Overview"
+description: "Install and use the MemoryBase command-line tool to access your memory from the terminal."
+---
+
+The MemoryBase CLI lets you search your conversation history, browse projects, and view your timeline -- all from the terminal. It's also the bridge that connects MemoryBase to coding tools like Claude Code and Codex.
+
+## Install
+
+```bash
+npm install -g memorybase
+```
+
+Verify the installation:
+
+```bash
+memorybase --version
+```
+
+<Accordion title="Don't have Node.js?">
+  The CLI requires Node.js 18 or newer. Download it from [nodejs.org](https://nodejs.org) (choose the LTS version), then restart your terminal before running the install command.
+</Accordion>
+
+## Sign In
+
+```bash
+memorybase login
+```
+
+This opens your browser to sign in with your MemoryBase account. Once complete, the CLI stores your session locally so you don't need to sign in again.
+
+**Other auth commands:**
+
+| Command | What it does |
+|---|---|
+| `memorybase whoami` | Show which account you're signed in with |
+| `memorybase logout` | Clear stored credentials |
+
+## Global Options
+
+These options work with any command:
+
+| Option | Description |
+|---|---|
+| `--server <url>` | Use a different backend server (advanced) |
+| `--json` | Output results as JSON where supported |
+| `-V, --version` | Show the CLI version |
+| `-h, --help` | Show help for any command |
+
+## Quick Reference
+
+| Command | Description |
+|---|---|
+| [`memorybase search`](/cli/search) | Search across all your conversations and projects |
+| [`memorybase status`](/cli/status) | Check your memory indexing status |
+| [`memorybase projects list`](/cli/projects) | List all your projects |
+| [`memorybase project <id>`](/cli/projects) | View a project or its context pack |
+| [`memorybase timeline list`](/cli/timeline) | Browse your activity timeline |
+| [`memorybase timeline show <date>`](/cli/timeline) | View a specific day's timeline |
+| [`memorybase mcp`](/cli/mcp) | Start the MCP server (used by coding tools) |
+| `memorybase login` | Sign in via browser |
+| `memorybase logout` | Clear stored credentials |
+| `memorybase whoami` | Show current user |

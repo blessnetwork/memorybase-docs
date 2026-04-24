@@ -1,0 +1,24 @@
+---
+title: "search_text"
+description: "Keyword search across project and conversation titles and summaries."
+---
+
+A lightweight alternative to `search_memory` when a simple keyword match is all that's needed. Searches project and conversation titles and summaries using full-text search.
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `query` | string | Yes | The keyword(s) to search for |
+| `type` | string | No | Filter to `projects` or `conversations` only |
+| `limit` | number | No | Max results to return (1-100) |
+
+## What It Returns
+
+A list of matching projects and/or conversations with their titles, summaries, and metadata.
+
+## When Your Assistant Uses This
+
+- Looking up a project or conversation by name
+- Quick lookups where exact keyword matching is sufficient
+- Filtering results to just projects or just conversations

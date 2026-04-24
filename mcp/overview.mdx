@@ -1,0 +1,44 @@
+---
+title: "MCP Overview"
+description: "How the MemoryBase MCP server works and what tools it provides to your coding assistant."
+---
+
+When you connect MemoryBase to a coding tool like Claude Code, the tool gains access to a set of **tools** it can call automatically. You don't need to call these yourself -- your coding assistant decides when to use them based on what you ask it to do.
+
+This reference documents what those tools are, so you know what's possible.
+
+## How It Works
+
+The MCP (Model Context Protocol) server acts as a bridge between your coding tool and your MemoryBase account. When you ask Claude Code something like "find my conversation about the login page," Claude Code calls the `search_memory` tool behind the scenes and returns the results.
+
+## Setup
+
+Register the MCP server with your coding tool once:
+
+**Claude Code:**
+```bash
+claude mcp add memorybase -- npx -y memorybase mcp
+```
+
+**Other MCP-compatible tools:**
+Run `npx -y memorybase mcp` as a `stdio` type server.
+
+<Note>
+  You must be signed in (`memorybase login`) before the MCP server can access your memory.
+</Note>
+
+## Available Tools
+
+The MCP server exposes 9 tools:
+
+| Tool | Description |
+|---|---|
+| [`search_memory`](/mcp/search-memory) | Semantic search across all your conversations and projects |
+| [`search_text`](/mcp/search-text) | Keyword search across project and conversation titles |
+| [`memory_status`](/mcp/memory-status) | Check how much memory is indexed and searchable |
+| [`list_projects`](/mcp/list-projects) | List all your projects |
+| [`get_project_context`](/mcp/get-project-context) | Load a project's full context pack |
+| [`list_conversations`](/mcp/list-conversations) | List your captured conversations |
+| [`get_conversation`](/mcp/get-conversation) | Read a specific conversation with its messages |
+| [`get_timeline`](/mcp/get-timeline) | Browse your activity timeline |
+| [`get_timeline_for_date`](/mcp/get-timeline-for-date) | View a specific day's activity |

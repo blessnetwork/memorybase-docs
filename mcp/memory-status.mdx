@@ -1,0 +1,23 @@
+---
+title: "memory_status"
+description: "Check how much of your memory is indexed and ready to search."
+---
+
+Returns statistics about your memory index -- how many entries exist, how many are embedded, and when the index was last updated. Your assistant may call this before searching to confirm there's data available.
+
+## Parameters
+
+None.
+
+## What It Returns
+
+- Entry count (total conversations)
+- Project count
+- Embedded mention count
+- Embedding version
+- Last indexed timestamp
+
+## When Your Assistant Uses This
+
+- Before a first search, to confirm your memory has data
+- When search returns empty and it wants to diagnose why

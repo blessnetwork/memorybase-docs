@@ -1,0 +1,61 @@
+---
+title: "timeline"
+description: "Browse your activity timeline to see what you discussed and when."
+---
+
+The timeline shows a summary of your AI activity organized by day or week.
+
+## List Timeline Entries
+
+```bash
+memorybase timeline list [options]
+```
+
+Shows your most recent timeline entries, newest first.
+
+### Options
+
+| Option | Description |
+|---|---|
+| `--cursor <date>` | Start listing from this date (format: `YYYY-MM-DD`) |
+| `--granularity <g>` | Group by `day` (default) or `week` |
+
+### Examples
+
+**View recent activity:**
+
+```bash
+memorybase timeline list
+```
+
+**View weekly summaries:**
+
+```bash
+memorybase timeline list --granularity week
+```
+
+**Page through older entries:**
+
+```bash
+memorybase timeline list --cursor 2026-03-01
+```
+
+## View a Specific Day
+
+```bash
+memorybase timeline show <date>
+```
+
+Shows the full timeline entry for a specific date.
+
+### Arguments
+
+| Argument | Required | Description |
+|---|---|---|
+| `date` | Yes | The date to view (format: `YYYY-MM-DD`) |
+
+### Example
+
+```bash
+memorybase timeline show 2026-04-15
+```

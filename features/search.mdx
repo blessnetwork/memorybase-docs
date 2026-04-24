@@ -1,40 +1,8 @@
 ---
 title: "Search"
-description: "Full-text search across conversations and projects with relevance ranking."
+description: "Find any conversation or project instantly."
 ---
 
-Search queries conversations and projects in one shot. Results are ranked by relevance — conversations match on title, tags, topics, and summary; projects match on name and description.
+Search across all your conversations and projects at once. Results are ranked by relevance, matching on titles, tags, topics, and summaries.
 
-## Basic usage
-
-Type a query in the search bar. Results return up to 5 items by default, each tagged with a `type` field (`project` or `conversation`).
-
-Leave the query empty to get your most recently updated items as suggestions.
-
-## Filtering by type
-
-Restrict results with the `type` parameter or a query prefix:
-
-```
-q=react&type=projects
-q=type:conversations react
-```
-
-Both approaches work interchangeably. If both are present, the parameter wins.
-
-## Pagination
-
-Use `limit` (default 5, max 100) and `offset` (default 0) to page through results. The response includes a `total` count.
-
-```json
-{
-  "results": [...],
-  "total": 47,
-  "limit": 10,
-  "offset": 0
-}
-```
-
-<Note>
-  Archived items are included in search results. Use the `isArchived` field on each result to filter them out if needed.
-</Note>
+Just type what you're looking for in the search bar. You can filter results to only **projects** or only **conversations** if needed.

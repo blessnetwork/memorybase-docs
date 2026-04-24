@@ -1,0 +1,29 @@
+---
+title: "list_conversations"
+description: "List your captured conversations across AI platforms."
+---
+
+Returns your conversations, newest first. Can filter by platform or fetch specific conversations by ID.
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `platform` | string | No | Filter by platform: `claude`, `chatgpt`, `gemini` |
+| `ids` | string[] | No | Fetch specific conversations by ID (max 100) |
+| `cursor` | string | No | Pagination cursor for loading more results |
+| `limit` | number | No | Max results per page (1-100) |
+
+## What It Returns
+
+A paginated list of conversations, each with:
+- ID, platform, and title
+- Tags, topics, and AI-generated summary
+- Archive status and timestamps
+- Linked projects
+
+## When Your Assistant Uses This
+
+- You ask "what have I been discussing lately?"
+- The assistant needs to browse your recent conversations
+- You want to see conversations from a specific platform

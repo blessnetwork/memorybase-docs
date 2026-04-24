@@ -1,0 +1,24 @@
+---
+title: "list_projects"
+description: "List all your projects with their names and descriptions."
+---
+
+Returns all your projects so your assistant can find the right one to load context from.
+
+## Parameters
+
+None.
+
+## What It Returns
+
+An array of projects, each with:
+- `id` -- the project's unique identifier
+- `name` -- the project name
+- `description` -- the project description
+- `isArchived` -- whether the project is archived
+
+## When Your Assistant Uses This
+
+- You mention a project by name and the assistant needs to find its ID
+- The assistant wants to see what projects you have before loading context
+- You ask something like "what projects do I have?" or "find my shopping cart project"

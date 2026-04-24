@@ -1,0 +1,27 @@
+---
+title: "status"
+description: "Check how much of your memory has been indexed and is searchable."
+---
+
+```bash
+memorybase status
+```
+
+Shows the current state of your memory index -- how many conversations have been processed, how many are searchable, and when the index was last updated.
+
+Use this to confirm that your conversations are being captured and indexed properly. If you just signed up or recently had a large sync, some entries may still be processing.
+
+## Example
+
+```bash
+memorybase status
+```
+
+```
+Memory Status
+─────────────────────────
+Conversations:  142
+Messages:       2,847
+Projects:       8
+Last indexed:   2026-04-24T10:30:00Z
+```

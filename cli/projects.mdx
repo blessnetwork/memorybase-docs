@@ -1,0 +1,64 @@
+---
+title: "projects / project"
+description: "List your projects and view their context packs."
+---
+
+## List Projects
+
+```bash
+memorybase projects list
+```
+
+Shows all your projects with their names, descriptions, and IDs.
+
+### Example
+
+```bash
+memorybase projects list
+```
+
+```
+ID                                    Name                    Description
+a1b2c3d4-e5f6-7890-abcd-ef1234567890  Mobile App Redesign     Tracking the Q2 redesign effort
+d4e5f6a7-b8c9-0123-defa-234567890123  API Integration         Payment provider integration work
+```
+
+## View a Project
+
+```bash
+memorybase project <id> [options]
+```
+
+Shows details about a specific project.
+
+### Arguments
+
+| Argument | Required | Description |
+|---|---|---|
+| `id` | Yes | The project ID (from `projects list`) |
+
+### Options
+
+| Option | Description |
+|---|---|
+| `--pack` | Print the project's assembled context pack as markdown |
+
+### Examples
+
+**View project details:**
+
+```bash
+memorybase project a1b2c3d4-e5f6-7890-abcd-ef1234567890
+```
+
+**Export a project's context pack** (the full summary of all conversations and sources in that project):
+
+```bash
+memorybase project a1b2c3d4-e5f6-7890-abcd-ef1234567890 --pack
+```
+
+This is especially useful when you want to feed a project's full context into another tool or save it to a file:
+
+```bash
+memorybase project a1b2c3d4-e5f6-7890-abcd-ef1234567890 --pack > context.md
+```

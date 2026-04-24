@@ -1,0 +1,33 @@
+---
+title: "Setup"
+description: "Install the MemoryBase CLI for your AI agents."
+---
+
+## Before you start
+
+- A **MemoryBase account** ([sign up here](https://dashboard.memorybase.app/sign-in))
+- **Node.js 18+** ([download here](https://nodejs.org) -- choose "LTS")
+
+## Install and sign in
+
+<Steps>
+  <Step title="Install the CLI">
+    ```bash
+    npm install -g memorybase
+    ```
+  </Step>
+  <Step title="Sign in">
+    ```bash
+    memorybase login
+    ```
+    This opens your browser. Sign in with your MemoryBase account.
+  </Step>
+  <Step title="Test it">
+    ```bash
+    memorybase search "my recent projects"
+    ```
+    You should see results from your conversation history.
+  </Step>
+</Steps>
+
+See the full [CLI Reference](/cli/overview) for all available commands.

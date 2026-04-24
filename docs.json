@@ -3,19 +3,32 @@
   "theme": "mint",
   "name": "MemoryBase",
   "colors": {
-    "primary": "#040404",
-    "light": "#7c7c7c",
-    "dark": "#cacaca"
+    "primary": "#71717a",
+    "light": "#ffffff",
+    "dark": "#27272a"
   },
-  "favicon": "https://media.brand.dev/8b4025a0-369a-4e38-9030-7664133381ec.png",
+  "favicon": "/public/favicon.ico",
   "logo": {
-    "light": "https://media.brand.dev/70c1a15f-231c-4626-b34e-2b92d191c863.svg",
-    "dark": "https://media.brand.dev/70c1a15f-231c-4626-b34e-2b92d191c863.svg"
+    "light": "/public/icon-light.svg",
+    "dark": "/public/icon-dark.svg"
+  },
+  "background": {
+    "decoration": "grid",
+    "color": {
+      "light": "#ffffff",
+      "dark": "#131419"
+    }
   },
   "navbar": {
     "primary": {
-      "type": "github",
-      "href": "https://github.com/blessnetwork/memorybase"
+      "type": "button",
+      "label": "Sign in",
+      "href": "https://dashboard.memorybase.app/sign-in"
+    }
+  },
+  "footer": {
+    "socials": {
+      "discord": "https://discord.gg/6CnJ72D8Va"
     }
   },
   "navigation": {
@@ -32,39 +45,65 @@
             "pages": [
               "features/conversations",
               "features/projects",
-              "features/search",
               "features/context-packs"
             ]
           },
           {
-            "group": "Extension",
+            "group": "Claude Code & Codex",
             "pages": [
-              "extension/overview",
-              "extension/supported-platforms",
-              "extension/memory-injection"
+              "coding-tools/overview",
+              "coding-tools/setup",
+              "coding-tools/usage"
             ]
           },
           {
-            "group": "Privacy",
-            "pages": ["privacy/overview", "privacy/data-export"]
+            "group": "AI Agents",
+            "pages": [
+              "ai-agents/overview",
+              "ai-agents/setup",
+              "ai-agents/workflows"
+            ]
           }
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "MemoryBase CLI",
         "groups": [
           {
-            "group": "Overview",
-            "pages": ["api-reference/overview", "api-reference/authentication"]
+            "group": "Getting Started",
+            "pages": ["cli/overview"]
           },
           {
-            "group": "Endpoints",
+            "group": "Commands",
             "pages": [
-              "api-reference/conversations",
-              "api-reference/projects",
-              "api-reference/search",
-              "api-reference/sync",
-              "api-reference/settings"
+              "cli/search",
+              "cli/projects",
+              "cli/timeline",
+              "cli/status",
+              "cli/mcp"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "MemoryBase MCP",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["mcp/overview"]
+          },
+          {
+            "group": "Tools",
+            "pages": [
+              "mcp/search-memory",
+              "mcp/search-text",
+              "mcp/memory-status",
+              "mcp/list-projects",
+              "mcp/get-project-context",
+              "mcp/list-conversations",
+              "mcp/get-conversation",
+              "mcp/get-timeline",
+              "mcp/get-timeline-for-date"
             ]
           }
         ]

@@ -1,34 +1,20 @@
 ---
 title: "Context Packs"
-description: "Distilled project knowledge you can inject into any AI prompt."
+description: "A portable summary of everything in a project, ready to use in any AI tool."
 ---
 
-A context pack is a structured knowledge bundle built from a project's conversations. Instead of pasting chat excerpts into prompts, you get a single document that gives any AI instant fluency in your project's history, terminology, and decisions.
+A context pack is a single document that summarizes everything in a project -- conversations, notes, and sources. Instead of re-explaining your project to a new AI session, you can share the context pack and it's instantly up to speed.
 
-## How they're built
+## How they work
 
-When you add conversations to a project, each one is processed by an LLM that extracts:
+When you add conversations to a project, MemoryBase automatically extracts the key information:
 
-- **Summary** — what the conversation covered
-- **Tags and topics** — keywords and themes
-- **Contexts** — atomic facts (e.g., "User prefers Postgres over MySQL")
-- **Entities** — named things with types and descriptions
-- **States** — decisions, plans, and explorations
+- What was discussed
+- Decisions that were made
+- Important terms and concepts
 
-These layers are assembled into the full context pack alongside the project's name, description, and aggregated tags/topics.
+This is assembled into a context pack that updates as you add more conversations.
 
-<Note>
-  Processing is automatic. The pack updates each time a new conversation is processed. Track progress via `completedCount` and `pendingCount`.
-</Note>
+## Using a context pack
 
-## Accessing and exporting
-
-Open a project and click **Context pack** to view it. Click **Export as Markdown** to download a portable file you can paste into any AI tool's system prompt, upload as a file, or attach as a custom instruction.
-
-## Versioning
-
-The `version` field increments when the pack is rebuilt — either from a new conversation being processed or a manual regeneration. Regeneration re-processes all conversations, which may produce slightly different output.
-
-## Using context packs
-
-Export or retrieve the pack, prepend it to your system prompt, and start asking questions. The AI will have full project context without you re-explaining anything.
+Open a project and click **Context pack** to view it. Click **Export as Markdown** to download it. You can then paste it into any AI tool's prompt, upload it as a file, or use it as a reference.

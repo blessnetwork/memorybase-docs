@@ -1,40 +1,21 @@
 ---
 title: "Projects"
-description: "Group related conversations and sources into named workspaces that generate context packs."
+description: "Group related conversations into projects to keep things organized."
 ---
 
-A project groups related conversations and custom sources around a theme — a client, a research area, a codebase. Memorybase processes the conversations and produces a [context pack](/features/context-packs) you can inject into any AI session.
+A project groups related conversations around a theme -- a client, a feature, a research topic. MemoryBase uses these conversations to build a [context pack](/features/context-packs) you can share with any AI tool.
 
 ## Creating a project
 
-Open the **Projects** tab, click **New project**, give it a name (up to 200 chars) and an optional description (up to 1,000 chars). The description is included in your context pack, so make it useful.
+Open the **Projects** tab, click **New project**, and give it a name and optional description.
 
-## Adding conversations
+## Adding content
 
-From the project: click **Add conversations** and select from the list (up to 100 at once). From a conversation: click **Add to project**. Adding conversations queues them for context pack processing.
+- **Conversations** -- click **Add conversations** to link existing chats to the project
+- **Notes** -- attach freehand text like decisions or requirements
+- **URLs** -- link to external resources
+- **Snippets** -- attach code blocks or configurations
 
-Remove a conversation by clicking **Remove** next to it — this unlinks it but does not delete it.
+## AI-suggested projects
 
-## Sources
-
-Attach reference material that isn't a conversation:
-
-<CardGroup cols={3}>
-  <Card title="note" icon="note-sticky">Freehand text — decisions, requirements, background context.</Card>
-  <Card title="url" icon="link">Links to docs, PRs, design files, or any external resource.</Card>
-  <Card title="snippet" icon="code">Code blocks — key functions, schemas, configs.</Card>
-</CardGroup>
-
-Click **Add source** in the project, set the type and content, and it's attached immediately.
-
-## AI suggestions
-
-Memorybase analyzes your recent conversations and suggests new projects. Open the **Projects** tab and click **Suggestions** to review and create them with conversations pre-linked.
-
-## Archiving
-
-Archive a project to hide it from the main list. Conversations, sources, and the context pack are all preserved. Archiving a project does not archive its conversations.
-
-## System projects
-
-**Uncategorized** shows conversations not in any project. **Archived** shows all archived conversations. Both are system-managed.
+MemoryBase can suggest projects based on your recent conversations. Open the **Projects** tab and click **Suggestions** to see them.

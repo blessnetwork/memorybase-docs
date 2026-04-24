@@ -1,0 +1,63 @@
+---
+title: "Setup"
+description: "Connect MemoryBase to Claude Code or Codex in under 2 minutes."
+---
+
+## Before you start
+
+- A **MemoryBase account** ([sign up here](https://dashboard.memorybase.app/sign-in))
+- **Node.js 18+** ([download here](https://nodejs.org) -- choose "LTS")
+- **Claude Code** or **Codex** installed
+
+## Install and connect
+
+<Steps>
+  <Step title="Install the MemoryBase CLI">
+    Open your terminal and run:
+    ```bash
+    npm install -g memorybase
+    ```
+  </Step>
+
+  <Step title="Sign in">
+    ```bash
+    memorybase login
+    ```
+    This opens your browser. Sign in with your MemoryBase account.
+  </Step>
+
+  <Step title="Connect to Claude Code">
+    ```bash
+    claude mcp add memorybase -- npx -y memorybase mcp
+    ```
+    That's it. Claude Code can now access your memory.
+
+    <Accordion title="Using Codex instead?">
+      Add the following as a "stdio" type MCP server in your Codex configuration:
+      ```bash
+      npx -y memorybase mcp
+      ```
+    </Accordion>
+  </Step>
+
+  <Step title="Verify it works">
+    Open Claude Code and ask:
+    ```
+    What do you know about my recent conversations?
+    ```
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="'npm' is not recognized">
+    Node.js isn't installed. Download it from [nodejs.org](https://nodejs.org) and restart your terminal.
+  </Accordion>
+  <Accordion title="'claude' is not recognized">
+    Claude Code isn't installed. Follow the [Claude Code setup guide](https://docs.anthropic.com/en/docs/claude-code) first.
+  </Accordion>
+  <Accordion title="Claude Code doesn't use my memory">
+    Run `memorybase login` and make sure your account has conversations. Check at [dashboard.memorybase.app](https://dashboard.memorybase.app).
+  </Accordion>
+</AccordionGroup>

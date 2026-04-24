@@ -1,0 +1,25 @@
+---
+title: "get_project_context"
+description: "Load a project's full context pack -- a merged summary of all its conversations and sources."
+---
+
+Returns the assembled context pack for a project. This is a structured summary that combines everything in a project: conversation insights, attached notes, URLs, and code snippets.
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `projectId` | string | Yes | The project ID (from `list_projects`) |
+| `format` | string | No | `markdown` (default) or `json` |
+
+## What It Returns
+
+**Markdown format (default):** A ready-to-use document your assistant can read to understand the full project context.
+
+**JSON format:** Structured data with `projectName`, `description`, `topics`, `tags`, `layers`, and processing status.
+
+## When Your Assistant Uses This
+
+- You ask it to work on a specific project
+- You say "use the context from my Mobile App project"
+- The assistant found a relevant project via `list_projects` or `search_memory` and wants the full picture

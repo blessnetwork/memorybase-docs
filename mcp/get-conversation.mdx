@@ -1,0 +1,24 @@
+---
+title: "get_conversation"
+description: "Read a specific conversation with its full message history."
+---
+
+Retrieves a single conversation by ID, optionally including all its messages. This is how your assistant reads the full content of a conversation it found through search.
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `conversationId` | string | Yes | The conversation ID |
+| `includeMessages` | boolean | No | Include the full message history (default: `true`) |
+
+## What It Returns
+
+- The conversation metadata (title, platform, tags, summary)
+- All messages in the conversation (if `includeMessages` is true), each with role, content, and timestamp
+
+## When Your Assistant Uses This
+
+- After finding a relevant conversation via search, it loads the full content
+- You reference a specific past conversation and the assistant needs the details
+- You say "implement what we discussed in that conversation about the checkout flow"

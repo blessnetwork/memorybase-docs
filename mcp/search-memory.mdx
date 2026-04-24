@@ -1,0 +1,32 @@
+---
+title: "search_memory"
+description: "Semantic search over your entire MemoryBase -- the primary way your coding tool finds relevant context."
+---
+
+The most important MCP tool. Your coding assistant uses this to find conversations and project context that are relevant to what you're working on. It uses semantic search (meaning-based, not just keywords) -- the same search that powers the browser extension.
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `q` | string | Yes | The search query (max 2,000 characters) |
+| `topLayers` | number | No | Max layers to return (1-10) |
+| `projectIds` | string[] | No | Only search within these project IDs (max 100) |
+| `pinnedProjectIds` | string[] | No | Always include these projects in scoring (max 50) |
+| `render` | boolean | No | If `true`, returns a ready-to-use markdown context pack |
+
+## What It Returns
+
+Ranked results containing:
+- Conversation summaries and context snippets
+- Project layers that match the query
+- Relevant entities (people, tools, concepts) mentioned across your history
+
+When `render: true`, returns a single markdown document your assistant can use directly for context.
+
+## When Your Assistant Uses This
+
+- You ask about something you've discussed before
+- You reference a past decision or conversation
+- Your assistant needs background context for a task
+- You say things like "remember when we discussed..." or "use the approach from last week"

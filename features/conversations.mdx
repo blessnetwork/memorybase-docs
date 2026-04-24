@@ -1,39 +1,30 @@
 ---
 title: "Conversations"
-description: "Memorybase captures AI conversations from ChatGPT, Claude, and Gemini with automatic enrichment."
+description: "MemoryBase automatically captures and organizes your AI conversations."
 ---
 
-Conversations are the core unit of memory in Memorybase. Every chat you have with ChatGPT, Claude, or Gemini is captured as a structured record with full message history and AI-generated metadata.
+MemoryBase saves every conversation you have with ChatGPT, Claude, or Gemini. Each one is automatically tagged, summarized, and made searchable.
 
 ## Supported platforms
 
 <CardGroup cols={2}>
-  <Card title="ChatGPT" icon="comments">chatgpt.com / chat.openai.com</Card>
+  <Card title="ChatGPT" icon="comments">chatgpt.com</Card>
   <Card title="Claude" icon="comments">claude.ai</Card>
   <Card title="Gemini" icon="comments">gemini.google.com</Card>
-  <Card title="Manual" icon="hand">Right-click context menu on any page</Card>
+  <Card title="Any page" icon="hand">Right-click to capture from any website</Card>
 </CardGroup>
 
-## AI enrichment
+## What gets captured
 
-After capture, an LLM automatically extracts **tags** (keywords), **topics** (broader themes), and a **summary** for each conversation. You can supplement these with your own `userTags`, `userTopics`, and `userSummary`.
+For each conversation, MemoryBase automatically generates:
 
-Processing status is tracked in `metadata.status` — once it reads `completed`, enrichment is done.
+- A **summary** of what was discussed
+- **Tags** and **topics** for easy discovery
+- The full **message history**
 
-## Viewing and browsing
+You can also add your own tags, topics, and summaries.
 
-Open the extension popup and go to **Conversations**. Listed in reverse-chronological order, filterable by platform. Click any conversation to see its summary, tags, topics, message count, and linked projects.
+## Organizing conversations
 
-Messages are paginated inside the detail view. Each shows role (`user`/`assistant`), content, and timestamp.
-
-## Archiving
-
-Archive a conversation to hide it from the default list without deleting it. All metadata, messages, and project links are preserved. Unarchive anytime from the **Archived** filter.
-
-<Note>
-  Archiving does not remove a conversation from projects. Remove it from the project separately if needed.
-</Note>
-
-## Linking to projects
-
-From a conversation detail view, click **Add to project** to associate it with one or more projects. You can also add conversations in bulk from the project side — see [Projects](/features/projects).
+- **Add to projects** -- group related conversations together (see [Projects](/features/projects))
+- **Archive** -- hide conversations you don't need right now without deleting them
