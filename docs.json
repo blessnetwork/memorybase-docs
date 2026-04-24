@@ -38,7 +38,7 @@
         "groups": [
           {
             "group": "Get Started",
-            "pages": ["introduction", "quickstart"]
+            "pages": ["introduction", "quickstart", "usage"]
           },
           {
             "group": "Features",
