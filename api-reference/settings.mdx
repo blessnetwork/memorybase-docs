@@ -1,24 +1,16 @@
 ---
-title: "Settings — Memorybase API Reference"
-description: "Read and update your Memorybase profile, manage linked authentication accounts, and upload or remove a profile avatar image via the Settings API."
----
-
-The Settings API lets you read and update your account details. You can update your display name, manage the authentication accounts linked to your profile, and upload or remove a profile avatar image.
-
+title: "Settings"
+description: "Profile, linked accounts, and avatar management."
 ---
 
 ### GET /settings/profile
 
-Retrieve your profile information.
-
-**Example request**
+Get your profile.
 
 ```bash
 curl "https://api.memorybase.app/settings/profile" \
   -H "Authorization: Bearer <token>"
 ```
-
-**Example response**
 
 ```json
 {
@@ -32,29 +24,13 @@ curl "https://api.memorybase.app/settings/profile" \
 }
 ```
 
-**Response fields**
-
-<ResponseField name="id" type="string">Your unique user ID.</ResponseField>
-<ResponseField name="email" type="string">The email address associated with your account.</ResponseField>
-<ResponseField name="name" type="string">Your display name.</ResponseField>
-<ResponseField name="emailVerified" type="boolean">Whether your email address has been verified via OTP.</ResponseField>
-<ResponseField name="image" type="string | null">URL of your avatar image, or `null` if no avatar is set.</ResponseField>
-<ResponseField name="tier" type="string">Your subscription tier, e.g. `free` or `pro`.</ResponseField>
-<ResponseField name="createdAt" type="string">ISO 8601 timestamp when your account was created.</ResponseField>
-
 ---
 
 ### PATCH /settings/profile
 
 Update your display name.
 
-**Body**
-
-<ParamField body="name" type="string" required>
-  Your new display name. Minimum 1 character, maximum 100 characters.
-</ParamField>
-
-**Example request**
+<ParamField body="name" type="string" required>New name (1-100 chars).</ParamField>
 
 ```bash
 curl -X PATCH "https://api.memorybase.app/settings/profile" \
@@ -63,36 +39,18 @@ curl -X PATCH "https://api.memorybase.app/settings/profile" \
   -d '{"name": "Jane Doe"}'
 ```
 
-**Example response**
-
-```json
-{
-  "id": "user-abc123",
-  "email": "user@example.com",
-  "name": "Jane Doe",
-  "emailVerified": true,
-  "image": null,
-  "tier": "pro",
-  "createdAt": "2026-02-25T10:00:00.000Z"
-}
-```
-
 Returns the updated profile object.
 
 ---
 
 ### GET /settings/accounts
 
-List all authentication accounts linked to your profile. This always includes your email OTP account, plus any additional OAuth providers you have connected.
-
-**Example request**
+List linked authentication accounts (email OTP + any OAuth providers).
 
 ```bash
 curl "https://api.memorybase.app/settings/accounts" \
   -H "Authorization: Bearer <token>"
 ```
-
-**Example response**
 
 ```json
 [
@@ -105,57 +63,26 @@ curl "https://api.memorybase.app/settings/accounts" \
 ]
 ```
 
-**Response fields**
-
-<ResponseField name="id" type="string">Unique ID of the linked account record.</ResponseField>
-<ResponseField name="providerId" type="string">The authentication provider, e.g. `email-otp`.</ResponseField>
-<ResponseField name="accountId" type="string">The identifier within that provider — typically your email address for the OTP provider.</ResponseField>
-<ResponseField name="createdAt" type="string">ISO 8601 timestamp when this account was linked.</ResponseField>
-
 ---
 
 ### DELETE /settings/accounts/:accountId
 
-Unlink an authentication account from your profile.
+Unlink an authentication account.
 
-**Path parameters**
-
-<ParamField path="accountId" type="string" required>
-  The `id` of the account to unlink, as returned by `GET /settings/accounts`.
-</ParamField>
-
-<Warning>
-  You cannot unlink your email OTP login (accounts with IDs beginning with `email-`). You also cannot unlink an account if it is the only linked account on your profile — doing so would lock you out.
-</Warning>
-
-**Example request**
+<ParamField path="accountId" type="string" required>Account ID from `GET /settings/accounts`.</ParamField>
 
 ```bash
 curl -X DELETE "https://api.memorybase.app/settings/accounts/acct-abc123" \
   -H "Authorization: Bearer <token>"
 ```
 
-Returns `204 No Content` on success.
-
-Returns `400 Bad Request` if:
-- The account ID begins with `email-` (email login cannot be disconnected).
-- This is the only account linked to your profile.
-
-Returns `404 Not Found` if the account ID does not exist or does not belong to you.
+Returns `204 No Content`. Cannot unlink email OTP (`email-*`) or your only remaining account.
 
 ---
 
 ### PUT /settings/profile/avatar
 
-Upload a new profile avatar image. Send the file as a `multipart/form-data` request.
-
-**Allowed file types:** `image/jpeg`, `image/png`, `image/webp`, `image/gif`
-
-**Maximum file size:** 2 MB
-
-If you already have an avatar, the existing image is replaced and the old file is deleted.
-
-**Example request**
+Upload a new avatar. Send as `multipart/form-data`. Accepts `image/jpeg`, `image/png`, `image/webp`, `image/gif`. Max 2 MB.
 
 ```bash
 curl -X PUT "https://api.memorybase.app/settings/profile/avatar" \
@@ -163,31 +90,17 @@ curl -X PUT "https://api.memorybase.app/settings/profile/avatar" \
   -F "file=@/path/to/avatar.png"
 ```
 
-**Example response**
-
-```json
-{
-  "image": "https://avatars.memorybase.io/avatars/user-abc123/1234567890.jpg"
-}
-```
-
-<ResponseField name="image" type="string">The public URL of the newly uploaded avatar.</ResponseField>
-
-Returns `400 Bad Request` if no file is provided or the file type is not allowed.
-
-Returns `413 Payload Too Large` if the file exceeds 2 MB.
+Returns `{ "image": "https://avatars.memorybase.io/..." }`.
 
 ---
 
 ### DELETE /settings/profile/avatar
 
-Remove your current avatar image. After this call, your profile's `image` field returns to `null`.
-
-**Example request**
+Remove your avatar.
 
 ```bash
 curl -X DELETE "https://api.memorybase.app/settings/profile/avatar" \
   -H "Authorization: Bearer <token>"
 ```
 
-Returns `204 No Content` on success. Returns `404 Not Found` if your user record cannot be found.
+Returns `204 No Content`.

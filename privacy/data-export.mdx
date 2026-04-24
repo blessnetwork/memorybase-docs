@@ -1,125 +1,39 @@
 ---
-title: "Exporting, Importing, and Wiping Your Memorybase Data"
-description: "Back up all your memories and settings as an encrypted file, import them on a new device, and permanently delete your local data when needed."
+title: "Export, Import & Wipe"
+description: "Back up your data as an encrypted file, import it anywhere, or wipe local storage completely."
 ---
 
-Memorybase gives you full ownership of your data. You can export everything — all profiles, memories, and settings — into a single encrypted file, import that file on any device, and wipe your local storage completely at any time. This page walks through each operation.
+## Export
 
-## Exporting your data
+Exports all profiles, memories, and settings into a single encrypted file with integrity checksum.
 
-An export contains all of your profiles, every memory across all profiles, and your global settings. The file is encrypted with a password you choose at export time and includes a checksum so Memorybase can verify the file has not been corrupted or tampered with before importing.
+**Settings > Data > Export** — set a password, click Export. No recovery if you lose the password.
 
-<Steps>
-  <Step title="Open the extension popup">
-    Click the Memorybase icon in your Chrome toolbar.
-  </Step>
-  <Step title="Go to Settings">
-    Click the **Settings** icon (gear) in the top-right corner of the popup.
-  </Step>
-  <Step title="Open the Data section">
-    In Settings, navigate to **Data → Export**.
-  </Step>
-  <Step title="Set a password">
-    Enter a password for the export file. You will need this password to import the file later. There is no recovery option if you forget it.
-  </Step>
-  <Step title="Download the file">
-    Click **Export**. Memorybase generates the encrypted JSON file and your browser downloads it automatically.
-  </Step>
-</Steps>
+## Import
+
+**Settings > Data > Import** — select file, enter password, choose mode:
+
+- **Replace** — overwrites all local data with the import file.
+- **Merge** — combines imported data with existing data. ID conflicts resolved automatically.
+
+Import validates file integrity first. Corrupted files or wrong passwords are rejected without touching existing data.
+
+## Wipe
+
+**Settings > Data > Wipe** — removes all local profiles, memories, and settings. Immediate and permanent.
+
+Export first. Type `wipe` to confirm.
 
 <Warning>
-  Store your export password somewhere safe. Without it, the exported file cannot be decrypted. Memorybase has no way to recover your password or your data.
+  Cloud-synced data must be deleted separately from your account settings.
 </Warning>
 
-## Importing data
+## Storage usage
 
-Importing lets you restore a backup, set up Memorybase on a new device, or combine two separate knowledge bases into one. Memorybase validates the file's integrity checksum before applying any changes, so an incomplete or corrupted file will be rejected before it can affect your data.
+The extension popup shows a storage bar at the bottom.
 
-You have two import modes:
-
-<AccordionGroup>
-  <Accordion title="Replace mode">
-    **Replace** overwrites everything in your current local storage with the contents of the import file. All existing profiles and memories are removed and replaced with the imported data.
-
-    Use this when restoring a backup to a clean install or migrating to a new device where you want to start fresh from the export.
-  </Accordion>
-  <Accordion title="Merge mode">
-    **Merge** combines the imported data with your existing local data. Memories and profiles from the file are added alongside what you already have. When there are ID conflicts — for example, a memory in the file has the same internal ID as one you already have locally — Memorybase resolves them automatically so no data is lost.
-
-    Use this when combining two knowledge bases, for example if you used Memorybase on two separate machines and want to consolidate everything into one.
-  </Accordion>
-</AccordionGroup>
-
-<Steps>
-  <Step title="Open the extension popup">
-    Click the Memorybase icon in your Chrome toolbar.
-  </Step>
-  <Step title="Go to Settings">
-    Click **Settings** (gear icon) in the top-right corner.
-  </Step>
-  <Step title="Open the Data section">
-    Navigate to **Data → Import**.
-  </Step>
-  <Step title="Choose your import mode">
-    Select **Replace** or **Merge** depending on your goal.
-  </Step>
-  <Step title="Select the file and enter your password">
-    Pick the export file from your device and enter the password you set when exporting.
-  </Step>
-  <Step title="Confirm">
-    Memorybase verifies the file checksum, then applies the import. A summary shows how many profiles and memories were added or replaced.
-  </Step>
-</Steps>
-
-<Note>
-  Import validates the file's integrity before making any changes. If the file is corrupted or the password is wrong, the import is cancelled and your existing data is untouched.
-</Note>
-
-## Wiping all local data
-
-A data wipe removes everything Memorybase has stored locally — all profiles, all memories, all settings. The deletion is immediate and permanent. There is no undo.
-
-<Warning>
-  A local data wipe cannot be recovered. Export your data before wiping if you want any chance of restoring it later.
-</Warning>
-
-**Recommended flow: export first, then wipe.**
-
-<Steps>
-  <Step title="Export your data">
-    Follow the export steps above and confirm you have the file before continuing.
-  </Step>
-  <Step title="Open the extension popup">
-    Click the Memorybase icon in your Chrome toolbar.
-  </Step>
-  <Step title="Go to Settings → Data">
-    Navigate to **Settings → Data → Wipe**.
-  </Step>
-  <Step title="Confirm the wipe">
-    A confirmation dialog explains what will be deleted. Type **wipe** to confirm, then click **Delete all data permanently**.
-  </Step>
-</Steps>
-
-<Note>
-  A local wipe only deletes data stored in your browser. If you have cloud-synced data through a Memorybase account, you must delete that separately from your account settings.
-</Note>
-
-## Viewing and managing storage usage
-
-The extension popup shows a storage usage bar at the bottom of the main view. It displays how many megabytes you are using out of your browser's available storage.
-
-| Indicator | Meaning |
-|-----------|---------|
-| Bar below 80% | Normal — no action needed |
-| Bar at 80% or above | Warning — consider freeing space |
-| Bar at 95% or above | Critical — auto-save is paused |
-
-When you hit the warning or critical threshold, Memorybase suggests specific actions to free space:
-
-- **Delete oldest memories** — removes the 50 oldest memories across all profiles, with a preview of how much space this frees
-- **Adjust your retention policy** — go to **Settings → Storage** and set a retention period so older memories expire automatically
-- **Delete a profile** — if a profile is no longer needed, deleting it removes all its memories immediately
-
-<Tip>
-  Setting a retention period in your profile settings is the lowest-effort way to keep storage in check over time. Memories older than your chosen window — 30, 90, 180, or 365 days — are cleaned up automatically during each save cycle.
-</Tip>
+| Level | Meaning |
+|-------|---------|
+| Below 80% | Normal |
+| 80%+ | Warning — consider freeing space |
+| 95%+ | Critical — auto-save paused |

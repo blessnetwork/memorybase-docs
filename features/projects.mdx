@@ -1,116 +1,40 @@
 ---
-title: "Projects: group conversations and custom sources"
-description: "Projects let you collect related conversations, notes, URLs, and code snippets into a named workspace that Memorybase can distill into a context pack."
+title: "Projects"
+description: "Group related conversations and sources into named workspaces that generate context packs."
 ---
 
-A project is a named collection that groups related conversations and custom sources around a theme — a client engagement, a research area, a personal goal. Once you populate a project with conversations, Memorybase processes each one and produces a [context pack](/features/context-packs): a curated knowledge bundle you can inject into any AI session.
+A project groups related conversations and custom sources around a theme — a client, a research area, a codebase. Memorybase processes the conversations and produces a [context pack](/features/context-packs) you can inject into any AI session.
 
 ## Creating a project
 
-<Steps>
-  <Step title="Open the Projects tab">
-    Click the Memorybase extension icon and navigate to the **Projects** tab. Click **New project**.
-  </Step>
-  <Step title="Name your project">
-    Enter a `name` (up to 200 characters). A clear, descriptive name helps Memorybase's AI suggestions recognize when new conversations belong here.
-  </Step>
-  <Step title="Add a description (optional)">
-    Add a `description` (up to 1,000 characters) to explain the project's purpose. The description is included in your context pack, so the AI you're working with understands the project's scope.
-  </Step>
-  <Step title="Save">
-    Click **Create**. Your project is created with `isArchived: false` and an empty `conversations` and `sources` list.
-  </Step>
-</Steps>
+Open the **Projects** tab, click **New project**, give it a name (up to 200 chars) and an optional description (up to 1,000 chars). The description is included in your context pack, so make it useful.
 
-## Updating a project
+## Adding conversations
 
-To rename a project or update its description, open the project detail view and click **Edit**. You can update the `name`, `description`, or set `isArchived` to `true` to archive the project. All fields are optional — send only the ones you want to change.
+From the project: click **Add conversations** and select from the list (up to 100 at once). From a conversation: click **Add to project**. Adding conversations queues them for context pack processing.
 
-## Adding conversations to a project
+Remove a conversation by clicking **Remove** next to it — this unlinks it but does not delete it.
 
-You can add conversations to a project from two directions: from the project itself, or from an individual conversation.
+## Sources
 
-**From the project:**
-
-Open the project detail view and click **Add conversations**. Search for or select conversations from the list. You can add up to 100 conversations at once using their IDs. Once added, they appear in the project's `conversations` list with the timestamp they were linked.
-
-**From a conversation:**
-
-Open the conversation detail view and click **Add to project**. Select the project from the list. For more detail, see [Conversations](/features/conversations).
-
-To remove a conversation from a project, open the project and click **Remove** next to the conversation you want to unlink. This does not delete the conversation — it only removes the association.
-
-<Note>
-  Adding a conversation to a project queues it for context pack processing. The more conversations a project contains, the more comprehensive its context pack becomes.
-</Note>
-
-## Adding sources
-
-Sources let you attach reference material to a project that isn't a conversation — a link to a document, a freehand note, or a code snippet. Each source has a `type`:
+Attach reference material that isn't a conversation:
 
 <CardGroup cols={3}>
-  <Card title="note" icon="note-sticky">
-    Freehand text — useful for recording decisions, requirements, or background context you want the AI to know.
-  </Card>
-  <Card title="url" icon="link">
-    A URL pointing to an external resource — documentation, a pull request, a design file, or any reference page.
-  </Card>
-  <Card title="snippet" icon="code">
-    A block of code — useful for attaching a key function, schema, or configuration the AI should be aware of.
-  </Card>
+  <Card title="note" icon="note-sticky">Freehand text — decisions, requirements, background context.</Card>
+  <Card title="url" icon="link">Links to docs, PRs, design files, or any external resource.</Card>
+  <Card title="snippet" icon="code">Code blocks — key functions, schemas, configs.</Card>
 </CardGroup>
 
-To add a source, open the project and click **Add source**. Fill in the `type`, `content`, and an optional `title`. The source is attached to the project immediately.
+Click **Add source** in the project, set the type and content, and it's attached immediately.
 
-To update or remove a source, open the project's **Sources** tab, click the source, and choose **Edit** or **Delete**.
+## AI suggestions
 
-<Tip>
-  Use `url` sources to link to living documents that change over time — design specs, API docs, or shared wikis. Use `note` sources for stable context that doesn't exist at a URL, like a statement of requirements or a list of constraints.
-</Tip>
+Memorybase analyzes your recent conversations and suggests new projects. Open the **Projects** tab and click **Suggestions** to review and create them with conversations pre-linked.
 
-## AI project suggestions
+## Archiving
 
-Memorybase can analyze your recent conversations and suggest new projects you haven't created yet. Each suggestion includes a proposed `name`, a `description`, and a list of conversations that fit the theme.
-
-To view suggestions, open the **Projects** tab and click **Suggestions**. Review the recommendations and click **Create project** on any suggestion to turn it into a real project with those conversations pre-linked.
-
-<Info>
-  Suggestions are generated from your conversation history and improve as you capture more conversations. If no suggestions appear, you may not have enough recent conversations for the model to detect clusters.
-</Info>
-
-## Archived projects
-
-Setting `isArchived: true` on a project removes it from your main project list without deleting it. The project's conversations and sources are preserved, and its context pack remains accessible.
-
-To archive a project, open it and click **Archive**. To view archived projects, use the **Archived** filter in the Projects tab. To restore an archived project, open it and click **Unarchive**.
-
-<Warning>
-  Archiving a project does not archive its conversations. Conversations remain in their current state and may still appear in other projects.
-</Warning>
+Archive a project to hide it from the main list. Conversations, sources, and the context pack are all preserved. Archiving a project does not archive its conversations.
 
 ## System projects
 
-Memorybase maintains two special projects automatically:
-
-- **Uncategorized** — conversations that haven't been added to any project yet. Browse this list to find conversations worth organizing into a project.
-- **Archived** — a view of all conversations with `isArchived: true`. This is not a project you manage directly; it's a system-managed filter.
-
-## Context packs
-
-Every project can generate a context pack — a structured summary of everything Memorybase has learned from the project's conversations. Context packs are ideal for priming an AI session with your full project history.
-
-To view a project's context pack, open the project and click **Context pack**. To download it as a Markdown file for use in any AI tool, click **Export**.
-
-See [Context packs](/features/context-packs) for a full explanation of how packs are structured and how to use them.
-
-<AccordionGroup>
-  <Accordion title="How many conversations can a project hold?">
-    There is no hard cap on the number of conversations per project. You can add up to 100 conversations in a single batch operation.
-  </Accordion>
-  <Accordion title="Can a conversation belong to multiple projects?">
-    Yes. A conversation can be linked to as many projects as you like. Its content is included in the context pack for each project it belongs to.
-  </Accordion>
-  <Accordion title="Does deleting a project delete its conversations?">
-    No. Deleting a project removes the project and all its sources, but conversations are preserved and simply become unlinked from that project.
-  </Accordion>
-</AccordionGroup>
+**Uncategorized** shows conversations not in any project. **Archived** shows all archived conversations. Both are system-managed.

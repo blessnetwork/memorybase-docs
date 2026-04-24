@@ -1,86 +1,28 @@
 ---
-title: "Inject memory context into AI prompts"
-description: "Use the Memorybase overlay to improve drafts with stored memories or hand-pick context blocks to prepend to your prompt in any supported AI chat interface."
+title: "Memory Injection"
+description: "Two ways to inject memory into AI prompts: Improve Prompt and Add Context."
 ---
 
-Memory injection is how Memorybase puts your stored knowledge to work in active conversations. On supported platforms — ChatGPT, Claude, and Gemini — the extension injects a small overlay button near the chat input. Clicking it opens a panel where you can browse your memories and attach the ones most relevant to what you're about to ask.
-
-There are two distinct ways to inject context: **Improve Prompt** uses your memories to rewrite and enrich a draft prompt before you send it, and **Add Context** lets you hand-pick memories to prepend to your prompt as a structured context block.
+Memory injection puts your stored knowledge into active conversations. Two modes: **Improve Prompt** rewrites your draft using relevant memories, and **Add Context** prepends selected memories to your prompt.
 
 ## Improve Prompt
 
-Improve Prompt rewrites your draft using relevant memories from your active profile. It's useful when you know roughly what you want to ask but want the prompt to be more specific, better structured, or enriched with context from past conversations.
+Write a rough prompt, then trigger improvement via the overlay or `Cmd+Shift+I`. Memorybase searches your memories, rewrites your draft, and shows a preview with the original, improved version, context used, and token count. Accept, edit, or cancel.
 
-<Steps>
-  <Step title="Type your draft prompt">
-    Write your prompt in the chat input field as you normally would. It doesn't need to be polished — a rough idea is enough.
-  </Step>
-  <Step title="Open the overlay and trigger improvement">
-    Click the Memorybase overlay button (the pill-shaped button near the input field) to open the memory panel. Then use the keyboard shortcut `Ctrl+Shift+I` (or `Cmd+Shift+I` on Mac) to trigger an improvement, or access it from the overlay.
+Three improvement strategies (configurable per profile):
 
-    Memorybase searches your active profile for memories related to your draft and uses them to generate an improved version.
-  </Step>
-  <Step title="Review the preview modal">
-    A modal appears showing:
-
-    - **Original** — your draft, exactly as you typed it
-    - **Improved** — the rewritten version (editable before you accept)
-    - **Context used** — a collapsible list of the memories that informed the improvement
-    - **Token count** — how many tokens the improved prompt uses
-  </Step>
-  <Step title="Accept, edit, or cancel">
-    Click **Accept** to replace the chat input with the improved prompt. If you want to tweak the result first, click **Edit** to modify it inline before accepting. Click **Cancel** to discard the improvement and keep your original draft.
-  </Step>
-</Steps>
-
-### Improvement strategies
-
-Each profile can be configured with one of three improvement strategies. The active strategy shapes how Memorybase rewrites your prompt.
-
-| Strategy | What it does |
-|----------|-------------|
-| **Expand** | Adds detail, context, and specificity to a vague prompt |
-| **Refine** | Cleans up language and fixes ambiguity without changing the length significantly |
-| **Format** | Adds structure — headers, bullets, numbered steps — without changing the content |
-
-You can change the strategy per profile in [profile settings](/extension/profiles).
+| Strategy | Effect |
+|----------|--------|
+| **Expand** | Adds detail and specificity |
+| **Refine** | Cleans up language and ambiguity |
+| **Format** | Adds structure (headers, bullets) without changing content |
 
 ## Add Context
 
-Add Context lets you select specific memories to prepend to your prompt. Unlike Improve Prompt, this doesn't rewrite anything — it attaches the memories you choose in a structured block that the AI reads before your message.
-
-<Steps>
-  <Step title="Click the Memorybase overlay button">
-    Click the overlay button near the chat input to open the memory panel.
-  </Step>
-  <Step title="Browse and select memories">
-    The **All Memories** tab shows your library ranked by relevance to the current context. Each memory shows:
-
-    - A title and description preview
-    - Whether it's a project memory (folder icon) or a chat memory (comment icon)
-    - A link to view the full memory in your dashboard
-
-    Click any row to add it to your selection. The row highlights and the **Attached** count increments. Click a selected row again to remove it.
-  </Step>
-  <Step title="Monitor your token budget">
-    The token budget tracker shows how many tokens your selection uses against your profile's limit (default: 2,000 tokens). Stay within the budget to avoid truncation.
-  </Step>
-  <Step title="Review attached memories">
-    Switch to the **Attached** tab to see exactly what's queued. Memories are split into two groups: **New** (pending, not yet in the conversation) and **Already attached in conversation** (previously injected in this session).
-  </Step>
-  <Step title="Confirm injection">
-    When you're ready, send your message. Memorybase prepends the selected memories to your prompt using a structured context block. The overlay button briefly shows "attached (N)" as confirmation.
-  </Step>
-</Steps>
-
-### How injected context is formatted
-
-When memories are injected, they appear before your prompt in the following format:
+Click the overlay button, browse your memory library, and select memories to attach. A token budget tracker keeps you within limits (default: 2,000 tokens). Selected memories are prepended as a structured context block:
 
 ```xml
 <context source="memorybase">
-The following information from your knowledge base may be relevant:
-
 [Memory 1 content]
 ---
 [Memory 2 content]
@@ -89,31 +31,13 @@ The following information from your knowledge base may be relevant:
 [Your original prompt]
 ```
 
-The AI receives both the context block and your prompt as a single message. The `<context>` tags help the model understand that this information comes from your knowledge base rather than from the current conversation.
+## Settings
 
-## Configuring injection settings
+| Setting | Default | Description |
+|---------|---------|-------------|
+| Token budget | 2,000 | Max tokens across all attached memories |
+| Similarity threshold | 60% | Minimum match score for surfacing memories |
 
-You can adjust the token budget and minimum similarity threshold per profile. These settings control how much context gets loaded and how closely a memory must match before it's surfaced.
+## Fallback
 
-| Setting | Default | What it controls |
-|---------|---------|-----------------|
-| Injection token budget | 2,000 tokens | Maximum total tokens across all selected memories |
-| Minimum similarity threshold | 60% | How closely a memory must match your current context to appear |
-
-To change these settings, open the profile settings from the extension popup or dashboard. See [Profiles](/extension/profiles) for details.
-
-<Tip>
-  Lowering the similarity threshold surfaces more memories but may include less relevant ones. Raising it gives you a shorter, higher-quality list. Start with the default and adjust based on what you see.
-</Tip>
-
-## When promptInjection is unavailable
-
-If the adapter for the current site has a broken `promptInjection` capability, Memorybase can't write directly into the input field. In this case:
-
-- The context block is **copied to your clipboard** automatically.
-- A notification tells you to paste it manually.
-- All other features — browsing memories, attaching them to track what you've used — continue to work normally.
-
-<Warning>
-  If you see "Copied to clipboard" instead of the context appearing in the input field, it means the adapter's prompt injection capability is currently broken. Paste the clipboard contents into the chat input manually. Check for an extension update to restore full functionality.
-</Warning>
+If the adapter's prompt injection is broken, context is copied to your clipboard instead. Paste manually. All other features continue working.

@@ -1,65 +1,31 @@
 ---
-title: "Search — Memorybase API Reference"
-description: "Full-text search across your projects and conversations, with optional type filters, pagination, and recent-item suggestions when no query is provided."
+title: "Search"
+description: "Full-text search across projects and conversations."
 ---
 
-The Search API lets you find projects and conversations by keyword. Results are returned as a discriminated union so you can tell at a glance whether each item is a project or a conversation. Passing an empty query (or omitting `q`) returns your most recently updated items as quick-pick suggestions.
+Search returns a discriminated union of project and conversation results. Empty query returns recent items as suggestions.
 
 ---
 
 ### GET /search
 
-Search across projects and conversations. Use the `type` parameter or a `type:` prefix in your query string to narrow results to one resource type.
-
-**Query parameters**
-
-<ParamField query="q" type="string">
-  The search query. Maximum 500 characters. Omit or leave empty to receive recent-item suggestions.
-
-  You can prefix the query with `type:projects` or `type:conversations` to filter by resource type without using the `type` parameter — for example, `q=type:projects react`.
-</ParamField>
-
-<ParamField query="type" type="string">
-  Restrict results to a single resource type. One of `projects` or `conversations`. Takes precedence over the `type:` prefix in `q`.
-</ParamField>
-
-<ParamField query="limit" type="number">
-  Maximum number of results to return per resource type. Must be a positive integer, maximum `100`. Defaults to `5`.
-</ParamField>
-
-<ParamField query="offset" type="number">
-  Number of results to skip for pagination. Must be a non-negative integer. Defaults to `0`.
-</ParamField>
-
-**Example request — search all types**
+<ParamField query="q" type="string">Search query (max 500 chars). Supports `type:projects` or `type:conversations` prefix. Omit for recent suggestions.</ParamField>
+<ParamField query="type" type="string">Filter to `projects` or `conversations`. Overrides `type:` prefix in `q`.</ParamField>
+<ParamField query="limit" type="number">Max results per type (max `100`, default `5`).</ParamField>
+<ParamField query="offset" type="number">Skip results for pagination (default `0`).</ParamField>
 
 ```bash
 curl "https://api.memorybase.app/search?q=react&limit=20" \
   -H "Authorization: Bearer <token>"
 ```
 
-**Example request — search only conversations**
-
 ```bash
+# Filter to conversations only
 curl "https://api.memorybase.app/search?q=react&type=conversations&limit=20" \
   -H "Authorization: Bearer <token>"
 ```
 
-**Example request — using inline type prefix**
-
-```bash
-curl "https://api.memorybase.app/search?q=type%3Aprojects+react" \
-  -H "Authorization: Bearer <token>"
-```
-
-**Example request — recent suggestions (empty query)**
-
-```bash
-curl "https://api.memorybase.app/search" \
-  -H "Authorization: Bearer <token>"
-```
-
-**Example response**
+**Response**
 
 ```json
 {
@@ -68,27 +34,18 @@ curl "https://api.memorybase.app/search" \
       "type": "project",
       "data": {
         "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-        "userId": "user-abc123",
         "name": "React + TypeScript App",
         "description": "Tracking conversations about building a React application",
-        "isArchived": false,
-        "version": 1,
-        "createdAt": "2026-02-25T10:00:00.000Z",
-        "updatedAt": "2026-02-25T10:00:00.000Z",
-        "deletedAt": null
+        "isArchived": false
       }
     },
     {
       "type": "conversation",
       "data": {
         "id": "conv-abc123",
-        "userId": "user-abc123",
         "platform": "chatgpt",
         "title": "React hooks deep dive",
         "isArchived": false,
-        "createdAt": "2026-02-25T10:00:00.000Z",
-        "updatedAt": "2026-02-25T10:00:00.000Z",
-        "deletedAt": null,
         "metadata": {
           "tags": ["react", "hooks"],
           "topics": ["frontend"],
@@ -105,64 +62,4 @@ curl "https://api.memorybase.app/search" \
 }
 ```
 
-**Response fields**
-
-<ResponseField name="results" type="array">
-  Array of search result items. Each item is a discriminated union on `type`.
-
-  <Expandable title="Project result">
-    <ResponseField name="type" type="string">Always `"project"` for project results.</ResponseField>
-    <ResponseField name="data" type="object">
-      <Expandable title="Project data fields">
-        <ResponseField name="id" type="string">UUID of the project.</ResponseField>
-        <ResponseField name="userId" type="string">ID of the owning user.</ResponseField>
-        <ResponseField name="name" type="string">Project name.</ResponseField>
-        <ResponseField name="description" type="string | null">Project description.</ResponseField>
-        <ResponseField name="isArchived" type="boolean">Whether the project is archived.</ResponseField>
-        <ResponseField name="version" type="number">Current version number.</ResponseField>
-        <ResponseField name="createdAt" type="string">ISO 8601 creation timestamp.</ResponseField>
-        <ResponseField name="updatedAt" type="string">ISO 8601 last-updated timestamp.</ResponseField>
-        <ResponseField name="deletedAt" type="string | null">ISO 8601 deletion timestamp, or `null` if not deleted.</ResponseField>
-      </Expandable>
-    </ResponseField>
-  </Expandable>
-
-  <Expandable title="Conversation result">
-    <ResponseField name="type" type="string">Always `"conversation"` for conversation results.</ResponseField>
-    <ResponseField name="data" type="object">
-      <Expandable title="Conversation data fields">
-        <ResponseField name="id" type="string">UUID of the conversation.</ResponseField>
-        <ResponseField name="userId" type="string">ID of the owning user.</ResponseField>
-        <ResponseField name="platform" type="string">Platform the conversation was captured from.</ResponseField>
-        <ResponseField name="title" type="string | null">Conversation title, or `null`.</ResponseField>
-        <ResponseField name="isArchived" type="boolean">Whether the conversation is archived.</ResponseField>
-        <ResponseField name="createdAt" type="string">ISO 8601 creation timestamp.</ResponseField>
-        <ResponseField name="updatedAt" type="string">ISO 8601 last-updated timestamp.</ResponseField>
-        <ResponseField name="deletedAt" type="string | null">ISO 8601 deletion timestamp, or `null`.</ResponseField>
-        <ResponseField name="metadata" type="object | null">
-          AI-generated metadata including `tags`, `topics`, and `summary`. `null` if not yet processed.
-        </ResponseField>
-      </Expandable>
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="total" type="number">
-  Total number of matching results across both resource types (or the filtered type).
-</ResponseField>
-
-<ResponseField name="limit" type="number">
-  The effective limit applied to this request.
-</ResponseField>
-
-<ResponseField name="offset" type="number">
-  The offset applied to this request.
-</ResponseField>
-
-<ResponseField name="filter" type="string | null">
-  The active filter — `"projects"`, `"conversations"`, or `null` if no filter was applied.
-</ResponseField>
-
-<ResponseField name="query" type="string">
-  The cleaned query string after stripping any `type:` prefix.
-</ResponseField>
+Each result has `type` (`"project"` or `"conversation"`) and `data` with the full resource object. Response includes `total`, `limit`, `offset`, `filter`, and cleaned `query`.

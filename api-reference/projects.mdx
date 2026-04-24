@@ -1,41 +1,21 @@
 ---
-title: "Projects — Memorybase API Reference"
-description: "Create and manage projects to organise your conversations, attach notes, URLs, and snippets as sources, and export assembled context packs."
+title: "Projects"
+description: "Create and manage projects to organize conversations, attach sources, and export context packs."
 ---
 
-Projects let you group related conversations and attach your own notes, URLs, and code snippets as sources. Memorybase automatically assembles a **context pack** from each project — a curated summary you can inject into any AI session. Two special system projects exist for every account: **Uncategorized** (conversations not yet assigned to a project) and **Archived** (conversations you have archived).
+Projects group related conversations and let you attach notes, URLs, and code snippets as sources. Each project has an auto-assembled **context pack** you can inject into any AI session.
+
+Two system projects exist for every account: **Uncategorized** and **Archived**.
 
 ---
 
 ### GET /projects
 
-List all projects for your account, each including their sources and linked conversations.
-
-**Example request**
+List all projects with their sources and linked conversations.
 
 ```bash
 curl "https://api.memorybase.app/projects" \
   -H "Authorization: Bearer <token>"
-```
-
-**Example response**
-
-```json
-[
-  {
-    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    "userId": "user-abc123",
-    "name": "React + TypeScript App",
-    "description": "Tracking conversations about building a React application with TypeScript",
-    "isArchived": false,
-    "version": 1,
-    "createdAt": "2026-02-25T10:00:00.000Z",
-    "updatedAt": "2026-02-25T10:00:00.000Z",
-    "deletedAt": null,
-    "sources": [],
-    "conversations": []
-  }
-]
 ```
 
 ---
@@ -44,343 +24,162 @@ curl "https://api.memorybase.app/projects" \
 
 Create a new project.
 
-**Body**
-
-<ParamField body="name" type="string" required>
-  Project name. Minimum 1 character, maximum 200 characters.
-</ParamField>
-
-<ParamField body="description" type="string">
-  Optional description. Maximum 1000 characters.
-</ParamField>
-
-**Example request**
+<ParamField body="name" type="string" required>Project name (1-200 chars).</ParamField>
+<ParamField body="description" type="string">Optional description (max 1000 chars).</ParamField>
 
 ```bash
 curl -X POST "https://api.memorybase.app/projects" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{
-    "name": "React + TypeScript App",
-    "description": "Tracking conversations about building a React application with TypeScript"
-  }'
+  -d '{"name": "React + TypeScript App", "description": "Tracking React/TS conversations"}'
 ```
 
-**Example response** — `201 Created`
-
-```json
-{
-  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "userId": "user-abc123",
-  "name": "React + TypeScript App",
-  "description": "Tracking conversations about building a React application with TypeScript",
-  "isArchived": false,
-  "version": 1,
-  "createdAt": "2026-02-25T10:00:00.000Z",
-  "updatedAt": "2026-02-25T10:00:00.000Z",
-  "deletedAt": null
-}
-```
+Returns `201 Created` with the project object.
 
 ---
 
 ### GET /projects/suggestions
 
-Get AI-generated project suggestions based on your unorganised conversations. Each suggestion includes a proposed name, description, and the conversations that would belong to it.
-
-**Example request**
+AI-generated project suggestions based on unorganized conversations.
 
 ```bash
 curl "https://api.memorybase.app/projects/suggestions" \
   -H "Authorization: Bearer <token>"
 ```
 
-**Example response**
-
-```json
-{
-  "suggestions": [
-    {
-      "name": "TypeScript Debugging",
-      "description": "Conversations about TypeScript type errors and generic constraints",
-      "conversationIds": ["a1b2c3d4-e5f6-7890-abcd-ef1234567890"],
-      "conversations": [
-        {
-          "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-          "title": "Debugging TypeScript generics",
-          "updatedAt": "2026-02-25T09:45:00.000Z"
-        }
-      ]
-    }
-  ]
-}
-```
+Returns `{ "suggestions": [{ "name", "description", "conversationIds", "conversations" }] }`.
 
 ---
 
 ### GET /projects/archived
 
-Retrieve the system **Archived** project, which contains all conversations you have archived.
-
-**Example request**
+Retrieve the system **Archived** project with all archived conversations.
 
 ```bash
 curl "https://api.memorybase.app/projects/archived" \
   -H "Authorization: Bearer <token>"
 ```
 
-Returns a full project detail object including `sources` and `conversations`.
-
 ---
 
 ### GET /projects/uncategorized
 
-Retrieve the system **Uncategorized** project, which contains conversations not yet assigned to any user-created project.
-
-**Example request**
+Retrieve the system **Uncategorized** project with unassigned conversations.
 
 ```bash
 curl "https://api.memorybase.app/projects/uncategorized" \
   -H "Authorization: Bearer <token>"
 ```
 
-Returns a full project detail object including `sources` and `conversations`.
-
 ---
 
 ### GET /projects/:id
 
-Retrieve a single project by its UUID, including sources and linked conversations.
+Retrieve a project by UUID with sources and conversations.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
 
 ```bash
 curl "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
   -H "Authorization: Bearer <token>"
 ```
 
-**Example response**
-
-```json
-{
-  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "userId": "user-abc123",
-  "name": "React + TypeScript App",
-  "description": "Tracking conversations about building a React application with TypeScript",
-  "isArchived": false,
-  "version": 1,
-  "createdAt": "2026-02-25T10:00:00.000Z",
-  "updatedAt": "2026-02-25T10:00:00.000Z",
-  "deletedAt": null,
-  "sources": [],
-  "conversations": []
-}
-```
-
-Returns `404` if the project is not found or does not belong to you.
+Returns `404` if not found.
 
 ---
 
 ### PUT /projects/:id
 
-Update a project's name, description, or archived state.
+Update a project.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project.
-</ParamField>
-
-**Body**
-
-<ParamField body="name" type="string">
-  New name. Minimum 1 character, maximum 200 characters.
-</ParamField>
-
-<ParamField body="description" type="string">
-  New description. Maximum 1000 characters.
-</ParamField>
-
-<ParamField body="isArchived" type="boolean">
-  Set to `true` to archive the project, `false` to restore it.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
+<ParamField body="name" type="string">New name (1-200 chars).</ParamField>
+<ParamField body="description" type="string">New description (max 1000 chars).</ParamField>
+<ParamField body="isArchived" type="boolean">Archive or restore.</ParamField>
 
 ```bash
 curl -X PUT "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{
-    "name": "React + TypeScript App (Updated)",
-    "description": "Updated project description",
-    "isArchived": false
-  }'
+  -d '{"name": "Updated Name", "isArchived": false}'
 ```
-
-Returns the updated project base object.
 
 ---
 
 ### DELETE /projects/:id
 
-Permanently delete a project. This does not delete the conversations linked to the project.
+Permanently delete a project. Linked conversations are not deleted.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project to delete.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
 
 ```bash
 curl -X DELETE "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
   -H "Authorization: Bearer <token>"
 ```
 
-Returns `204 No Content` on success.
+Returns `204 No Content`.
 
 ---
 
 ### POST /projects/:id/sources
 
-Add a source (note, URL, or code snippet) to a project.
+Add a source to a project.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project.
-</ParamField>
-
-**Body**
-
-<ParamField body="content" type="string" required>
-  The source content. For `url` type this is the URL string; for `note` and `snippet` types this is the text content. Minimum 1 character.
-</ParamField>
-
-<ParamField body="type" type="string" required>
-  Source type. One of `note`, `url`, or `snippet`.
-</ParamField>
-
-<ParamField body="title" type="string">
-  Optional display title for the source. Minimum 1 character if provided.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
+<ParamField body="content" type="string" required>Source content (URL string, note text, or code snippet).</ParamField>
+<ParamField body="type" type="string" required>One of `note`, `url`, or `snippet`.</ParamField>
+<ParamField body="title" type="string">Optional display title.</ParamField>
 
 ```bash
 curl -X POST "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/sources" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{
-    "title": "TypeScript Docs",
-    "content": "https://react.dev/learn/typescript",
-    "type": "url"
-  }'
+  -d '{"title": "TypeScript Docs", "content": "https://react.dev/learn/typescript", "type": "url"}'
 ```
 
-**Example response** — `201 Created`
-
-```json
-{
-  "id": "s1a2b3c4-d5e6-7890-abcd-ef1234567890",
-  "projectId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "userId": "user-abc123",
-  "title": "TypeScript Docs",
-  "content": "https://react.dev/learn/typescript",
-  "type": "url",
-  "createdAt": "2026-02-25T10:00:00.000Z",
-  "updatedAt": "2026-02-25T10:00:00.000Z"
-}
-```
+Returns `201 Created` with the source object.
 
 ---
 
 ### GET /projects/:id/sources
 
-List all sources attached to a project.
+List all sources for a project.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
 
 ```bash
 curl "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/sources" \
   -H "Authorization: Bearer <token>"
 ```
 
-Returns an array of source objects.
-
 ---
 
 ### PUT /projects/:id/sources/:sourceId
 
-Update an existing source on a project.
+Update a source.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project.
-</ParamField>
-
-<ParamField path="sourceId" type="string" required>
-  UUID of the source to update.
-</ParamField>
-
-**Body**
-
-<ParamField body="title" type="string">
-  New title. Minimum 1 character if provided.
-</ParamField>
-
-<ParamField body="content" type="string">
-  New content. Minimum 1 character if provided.
-</ParamField>
-
-<ParamField body="type" type="string">
-  New type. One of `note`, `url`, or `snippet`.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
+<ParamField path="sourceId" type="string" required>Source UUID.</ParamField>
+<ParamField body="title" type="string">New title.</ParamField>
+<ParamField body="content" type="string">New content.</ParamField>
+<ParamField body="type" type="string">New type: `note`, `url`, or `snippet`.</ParamField>
 
 ```bash
 curl -X PUT \
   "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/sources/s1a2b3c4-d5e6-7890-abcd-ef1234567890" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{"title": "My Note", "content": "Updated source content or URL", "type": "note"}'
+  -d '{"title": "My Note", "content": "Updated content", "type": "note"}'
 ```
-
-Returns the updated source object.
 
 ---
 
 ### DELETE /projects/:id/sources/:sourceId
 
-Delete a source from a project.
+Delete a source.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project.
-</ParamField>
-
-<ParamField path="sourceId" type="string" required>
-  UUID of the source to delete.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
+<ParamField path="sourceId" type="string" required>Source UUID.</ParamField>
 
 ```bash
 curl -X DELETE \
@@ -388,176 +187,80 @@ curl -X DELETE \
   -H "Authorization: Bearer <token>"
 ```
 
-Returns `204 No Content` on success.
+Returns `204 No Content`.
 
 ---
 
 ### POST /projects/:id/conversations
 
-Link one or more conversations to a project.
+Link conversations to a project.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project.
-</ParamField>
-
-**Body**
-
-<ParamField body="conversationIds" type="string[]" required>
-  Array of conversation UUIDs to add to the project. Between 1 and 100 items.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
+<ParamField body="conversationIds" type="string[]" required>Conversation UUIDs (1-100).</ParamField>
 
 ```bash
 curl -X POST "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/conversations" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{
-    "conversationIds": [
-      "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "b2c3d4e5-f6a7-8901-bcde-f12345678901"
-    ]
-  }'
+  -d '{"conversationIds": ["conv-uuid-1", "conv-uuid-2"]}'
 ```
 
-**Example response**
-
-```json
-{ "success": true }
-```
+Returns `{ "success": true }`.
 
 ---
 
 ### DELETE /projects/:id/conversations/:conversationId
 
-Remove a single conversation from a project.
+Remove a conversation from a project.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project.
-</ParamField>
-
-<ParamField path="conversationId" type="string" required>
-  UUID of the conversation to remove.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
+<ParamField path="conversationId" type="string" required>Conversation UUID.</ParamField>
 
 ```bash
 curl -X DELETE \
-  "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/conversations/a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
+  "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/conversations/conv-uuid-1" \
   -H "Authorization: Bearer <token>"
 ```
 
-Returns `204 No Content` on success.
+Returns `204 No Content`.
 
 ---
 
 ### GET /projects/:id/conversations
 
-List all conversations linked to a project, ordered by when they were added.
+List conversations linked to a project.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
 
 ```bash
 curl "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/conversations" \
   -H "Authorization: Bearer <token>"
 ```
 
-**Example response**
-
-```json
-[
-  {
-    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    "title": "Debugging TypeScript generics",
-    "platform": "claude",
-    "createdAt": "2026-02-25T09:00:00.000Z",
-    "updatedAt": "2026-02-25T09:45:00.000Z",
-    "addedAt": "2026-02-25T09:45:00.000Z"
-  }
-]
-```
-
 ---
 
 ### GET /projects/:id/context-pack
 
-Retrieve the assembled context pack for a project. The context pack aggregates AI-extracted insights from every linked conversation into a single, structured object.
+Get the assembled context pack for a project.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
 
 ```bash
 curl "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/context-pack" \
   -H "Authorization: Bearer <token>"
 ```
 
-**Example response**
-
-```json
-{
-  "projectName": "React + TypeScript App",
-  "description": "Tracking conversations about building a React application with TypeScript",
-  "topics": ["react", "typescript"],
-  "tags": ["frontend", "hooks"],
-  "layers": [],
-  "version": 1,
-  "layerCount": 5,
-  "completedCount": 4,
-  "pendingCount": 1,
-  "failedCount": 0
-}
-```
-
-**Response fields**
-
-<ResponseField name="projectName" type="string">Display name of the project.</ResponseField>
-<ResponseField name="description" type="string | null">Project description.</ResponseField>
-<ResponseField name="topics" type="string[]">Aggregated topics across all conversations.</ResponseField>
-<ResponseField name="tags" type="string[]">Aggregated tags across all conversations.</ResponseField>
-<ResponseField name="layers" type="array">Per-conversation context layers, each containing a `summary`, `tags`, `topics`, and `contexts` array.</ResponseField>
-<ResponseField name="version" type="number">Monotonically increasing version number for this context pack.</ResponseField>
-<ResponseField name="layerCount" type="number">Total number of layers (one per linked conversation).</ResponseField>
-<ResponseField name="completedCount" type="number">Number of layers that have been fully processed.</ResponseField>
-<ResponseField name="pendingCount" type="number">Number of layers still being processed.</ResponseField>
-<ResponseField name="failedCount" type="number">Number of layers that failed to process.</ResponseField>
+Returns `projectName`, `description`, `topics`, `tags`, `layers`, `version`, `layerCount`, `completedCount`, `pendingCount`, `failedCount`.
 
 ---
 
 ### GET /projects/:id/context-pack/export
 
-Export the project's context pack as a Markdown document, ready to paste directly into any AI system prompt.
+Export context pack as Markdown. Returns `Content-Type: text/markdown; charset=utf-8`.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the project.
-</ParamField>
-
-<Note>
-  This endpoint returns `Content-Type: text/markdown; charset=utf-8`, not JSON. Use the raw response body as your Markdown text.
-</Note>
-
-**Example request**
+<ParamField path="id" type="string" required>Project UUID.</ParamField>
 
 ```bash
 curl "https://api.memorybase.app/projects/a1b2c3d4-e5f6-7890-abcd-ef1234567890/context-pack/export" \
   -H "Authorization: Bearer <token>"
 ```
-
-Returns a Markdown string on success, or a `404` JSON error if the context pack is not found.

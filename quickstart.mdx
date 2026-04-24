@@ -1,57 +1,28 @@
 ---
-title: "Quickstart: Install and capture your first memory"
-description: "Install the Memorybase Chrome extension, sign in with your email using a one-time code, and capture your first AI conversation in minutes."
+title: "Quickstart"
+description: "Install the extension and capture your first conversation."
 ---
 
-Memorybase runs as a Chrome extension that you load directly from your local build. Once installed and signed in, it captures AI conversations automatically — no configuration needed to get started.
+## Install
 
 <Steps>
   <Step title="Download the extension">
-    Download the latest Memorybase extension release and unzip it to a folder on your machine.
+    Download the latest Memorybase extension release and unzip it.
   </Step>
-
-  <Step title="Load the extension in Chrome">
-    Open Chrome and navigate to `chrome://extensions`. Enable **Developer mode** using the toggle in the top-right corner.
-
-    Click **Load unpacked**, then select the unzipped extension folder.
-
-    The Memorybase extension icon appears in your Chrome toolbar.
+  <Step title="Load in Chrome">
+    Go to `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select the extension folder.
   </Step>
-
-  <Step title="Sign in with your email">
-    Click the Memorybase icon in the Chrome toolbar. The onboarding screen appears with a **Sign In** button.
-
-    Click **Sign In**. A browser tab opens with the Memorybase sign-in page.
-
-    Enter your email address and click **Continue**. Memorybase sends a 6-digit one-time code to that address.
-
-    <Tip>
-      Check your spam folder if the code doesn't arrive within a minute or two. The code expires after 10 minutes.
-    </Tip>
-
-    Enter the 6-digit code on the sign-in page and click **Sign in**. Once verified, the page shows a confirmation and you can close the tab. The extension popup updates automatically — no page refresh needed.
+  <Step title="Sign in">
+    Click the Memorybase icon in your toolbar and sign in with your email. You'll receive a 6-digit code.
   </Step>
-
-  <Step title="Capture your first conversation">
-    Visit [chatgpt.com](https://chatgpt.com) or [claude.ai](https://claude.ai) and have a conversation as you normally would. Memorybase captures the exchange in the background.
-
-    You'll see the extension icon pulse briefly when a conversation is captured. Click the icon to open the popup and confirm your memory count has increased.
-
-    <Note>
-      The first time Memorybase generates embeddings, it loads a small on-device language model (~22 MB). This is a one-time download. Search and injection features become available once the model finishes loading.
-    </Note>
+  <Step title="Start chatting">
+    Visit [chatgpt.com](https://chatgpt.com) or [claude.ai](https://claude.ai). Memorybase captures conversations automatically.
   </Step>
 </Steps>
 
 ## What happens after capture
 
-Once a conversation is captured, Memorybase:
-
-1. **Sanitizes PII on-device** — names, emails, and other identifiable data are scrubbed before anything leaves your browser.
-  2. **Generates embeddings locally** — a semantic vector is created for each conversation turn using a model that runs entirely in your browser, enabling fast similarity search with no external API calls.
-3. **Syncs to the cloud** — the sanitized conversation is sent to Memorybase's backend, where it's enriched with tags, topics, and a summary.
-4. **Becomes searchable** — the conversation appears in your memory library and is available for context injection on any device.
-
-<Warning>
-  Memorybase only captures conversations on sites you've signed in to with your Memorybase account. If you sign out of the extension, capture stops until you sign back in.
-</Warning>
+1. **PII sanitized on-device** — identifiable data is scrubbed before leaving your browser.
+2. **Embeddings generated locally** — semantic vectors are created in-browser for search.
+3. **Synced to cloud** — the sanitized conversation is enriched with tags, topics, and a summary.
+4. **Searchable everywhere** — available for context injection on any device.

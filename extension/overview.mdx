@@ -1,74 +1,30 @@
 ---
-title: "Memorybase Chrome Extension Overview"
-description: "The Memorybase Chrome extension captures AI conversations and injects context into chats. Learn icon states, the popup, overlay, and keyboard shortcuts."
+title: "Chrome Extension Overview"
+description: "The Memorybase Chrome extension captures AI conversations and injects memory into your prompts."
 ---
 
-The Memorybase Chrome extension sits quietly in your browser and captures AI conversations as you have them. It injects a small overlay into supported chat interfaces — ChatGPT, Claude, and Gemini — so you can attach relevant memories directly to your prompts without leaving the page. Everything you capture syncs to the cloud and becomes available on any device.
+The Memorybase Chrome extension captures your AI conversations and lets you inject stored memories into prompts — directly inside ChatGPT, Claude, and Gemini.
 
-## Extension icon states
+## Icon states
 
-The extension icon in your Chrome toolbar changes color to reflect what the extension is doing on the current tab.
+| Icon | Meaning |
+|------|---------|
+| Grey | Not active on this site |
+| Green | Recording conversations |
+| Amber (`||`) | Paused |
+| Red (`!`) | Error — action needed |
 
-| Icon | Meaning | Tooltip |
-|------|---------|---------|
-| Grey | Not active on this site | "Not active on this site" |
-| Green | Recording conversations | "Recording · [Profile Name]" |
-| Amber (badge "||") | Paused by you | "Paused · Click to resume" |
-| Red (badge "!") | Error — action needed | "Error · Click for details" |
+## Popup
 
-When a conversation is captured, the green icon pulses briefly as confirmation.
+Click the toolbar icon to open the popup. Three sections:
 
-<Note>
-  If you see a yellow dot alongside the normal icon, your storage is getting full. Open the popup to review your usage.
-</Note>
+- **Memory Injection** — pause/resume injection with configurable duration.
+- **My Memory** — memory count and link to your dashboard.
+- **Integrations** — platform status, last sync, manual refresh.
 
-## The extension popup
+## Overlay
 
-Click the Memorybase icon in your Chrome toolbar to open the popup. It gives you a live view of the extension state for your current session.
-
-The popup shows three main sections:
-
-- **Memory Injection** — displays whether memory injection is active, paused, or inactive on the current tab. From here you can pause injection for 30 minutes, 1 hour, for the day, or indefinitely, and resume it with one click.
-- **My Memory** — shows how many projects and memories you have stored. Click **Manage** to open your full memory library in the dashboard.
-- **Integrations** — shows which AI platforms are active and when they last synced. Use the refresh button to trigger a manual sync, or the settings icon to manage platform connections.
-
-## The injected overlay
-
-On supported AI platforms, Memorybase injects a small overlay button near the chat input field. The button shows the current memory status at a glance:
-
-| Button label | What it means |
-|-------------|---------------|
-| Memory is ready | Extension is active and memories are loaded |
-| Memory is syncing... | Fetching your memories from the cloud |
-| Memory is attached (N) | You have N memories queued for this conversation |
-| Memory is paused | Injection is paused; click the button to see why |
-
-Click the overlay button to open the **memory popup**. This popup has two tabs:
-
-- **All Memories** — browse and search your full memory library. Filter by type: all, projects, or chats. Click any memory row to add it to your current conversation.
-- **Attached (N)** — see which memories are pending (queued to be sent) and which are already in the conversation. Memories suggested by Memorybase based on the current context are labelled **Suggested**.
-
-<Tip>
-  Each memory row has an external link button that opens that memory in your dashboard, so you can review the full context before attaching it.
-</Tip>
-
-## Pausing and resuming
-
-You can pause memory injection from the popup without disabling the extension entirely. This is useful when you want to have a conversation that shouldn't contribute to your memory.
-
-<Steps>
-  <Step title="Open the popup">
-    Click the Memorybase icon in your Chrome toolbar.
-  </Step>
-  <Step title="Pause injection">
-    In the **Memory Injection** row, click the **Pause** dropdown and choose a duration: 30 minutes, 1 hour, for the day, or indefinitely.
-  </Step>
-  <Step title="Resume when ready">
-    When paused, the dropdown is replaced by a **Resume** button. Click it to re-activate injection immediately.
-  </Step>
-</Steps>
-
-While paused, the overlay button on supported sites shows "Memory is paused" and the overlay popup cannot be opened.
+On supported platforms, a button appears near the chat input showing memory status: *ready*, *syncing*, *attached (N)*, or *paused*. Click it to browse and attach memories.
 
 ## Keyboard shortcuts
 
@@ -78,7 +34,3 @@ While paused, the overlay button on supported sites shows "Memory is paused" and
 | Quick profile switch | `Ctrl+Shift+P` / `Cmd+Shift+P` |
 | Improve prompt | `Ctrl+Shift+I` / `Cmd+Shift+I` |
 | Add context | `Ctrl+Shift+C` / `Cmd+Shift+C` |
-
-<Note>
-  Keyboard shortcuts require the extension to be active on the current tab. They have no effect on unsupported sites.
-</Note>

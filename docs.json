@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "luma",
-  "name": "Memorybase",
+  "theme": "mint",
+  "name": "MemoryBase",
   "colors": {
     "primary": "#040404",
     "light": "#7c7c7c",
@@ -25,18 +25,13 @@
         "groups": [
           {
             "group": "Get Started",
-            "pages": [
-              "introduction",
-              "quickstart",
-              "authentication"
-            ]
+            "pages": ["introduction", "quickstart"]
           },
           {
-            "group": "Core Features",
+            "group": "Features",
             "pages": [
               "features/conversations",
               "features/projects",
-              "features/timeline",
               "features/search",
               "features/context-packs"
             ]
@@ -46,16 +41,12 @@
             "pages": [
               "extension/overview",
               "extension/supported-platforms",
-              "extension/memory-injection",
-              "extension/profiles"
+              "extension/memory-injection"
             ]
           },
           {
-            "group": "Privacy & Data",
-            "pages": [
-              "privacy/overview",
-              "privacy/data-export"
-            ]
+            "group": "Privacy",
+            "pages": ["privacy/overview", "privacy/data-export"]
           }
         ]
       },
@@ -64,17 +55,13 @@
         "groups": [
           {
             "group": "Overview",
-            "pages": [
-              "api-reference/overview",
-              "api-reference/authentication"
-            ]
+            "pages": ["api-reference/overview", "api-reference/authentication"]
           },
           {
             "group": "Endpoints",
             "pages": [
               "api-reference/conversations",
               "api-reference/projects",
-              "api-reference/timeline",
               "api-reference/search",
               "api-reference/sync",
               "api-reference/settings"

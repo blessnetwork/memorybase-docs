@@ -1,42 +1,25 @@
 ---
-title: "Conversations — Memorybase API Reference"
-description: "List, retrieve, and manage AI conversations captured by the Memorybase extension, including messages, project links, and archive state."
+title: "Conversations"
+description: "List, retrieve, and manage AI conversations captured by Memorybase."
 ---
 
-Conversations are the core resource in Memorybase. Each conversation represents a thread captured from a supported AI platform (such as Claude, ChatGPT, or Gemini). The API lets you list and retrieve conversations, page through their messages, link them to projects, and archive or restore them.
+Conversations are threads captured from supported AI platforms (Claude, ChatGPT, Gemini).
 
 ---
 
 ### GET /conversations
 
-List all conversations for your account, ordered by most recently updated.
+List conversations, ordered by most recently updated.
 
-**Query parameters**
-
-<ParamField query="ids" type="string">
-  A comma-separated list of up to 100 conversation UUIDs to fetch. Example: `a1b2c3d4-e5f6-7890-abcd-ef1234567890,b2c3d4e5-f6a7-8901-bcde-f12345678901`
-</ParamField>
-
-<ParamField query="platform" type="string">
-  Filter conversations to a specific platform. Common values: `claude`, `chatgpt`, `gemini`.
-</ParamField>
-
-<ParamField query="cursor" type="string">
-  A UUID from a previous response's `nextCursor` field. Pass this to fetch the next page of results.
-</ParamField>
-
-<ParamField query="limit" type="number">
-  Maximum number of conversations to return. Must be a positive integer, maximum `100`.
-</ParamField>
-
-**Example request**
+<ParamField query="ids" type="string">Comma-separated UUIDs (max 100).</ParamField>
+<ParamField query="platform" type="string">Filter by platform: `claude`, `chatgpt`, `gemini`.</ParamField>
+<ParamField query="cursor" type="string">Pagination cursor from `nextCursor`.</ParamField>
+<ParamField query="limit" type="number">Max results (max `100`).</ParamField>
 
 ```bash
 curl "https://api.memorybase.app/conversations?platform=claude&limit=20" \
   -H "Authorization: Bearer <token>"
 ```
-
-**Example response**
 
 ```json
 {
@@ -58,133 +41,42 @@ curl "https://api.memorybase.app/conversations?platform=claude&limit=20" \
         "status": "completed",
         "messageCount": 24
       },
-      "projects": [
-        {
-          "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
-          "name": "TypeScript Research",
-          "description": "Notes on TypeScript generics and type safety",
-          "isArchived": false,
-          "version": 3,
-          "createdAt": "2026-02-20T10:00:00.000Z",
-          "updatedAt": "2026-02-25T09:45:00.000Z",
-          "addedAt": "2026-02-25T09:45:00.000Z"
-        }
-      ]
+      "projects": []
     }
   ],
   "nextCursor": null
 }
 ```
 
-**Response fields**
-
-<ResponseField name="conversations" type="array">
-  Array of conversation objects.
-
-  <Expandable title="Conversation object">
-    <ResponseField name="id" type="string">UUID of the conversation.</ResponseField>
-    <ResponseField name="platform" type="string">Platform the conversation was captured from (e.g. `claude`, `chatgpt`, `gemini`).</ResponseField>
-    <ResponseField name="title" type="string | null">Title of the conversation, or `null` if untitled.</ResponseField>
-    <ResponseField name="isArchived" type="boolean">Whether the conversation is archived.</ResponseField>
-    <ResponseField name="createdAt" type="string">ISO 8601 timestamp when the conversation was created.</ResponseField>
-    <ResponseField name="updatedAt" type="string">ISO 8601 timestamp when the conversation was last updated.</ResponseField>
-    <ResponseField name="metadata" type="object | null">
-      AI-extracted metadata, or `null` if not yet processed.
-
-      <Expandable title="Metadata fields">
-        <ResponseField name="tags" type="string[]">AI-generated tags.</ResponseField>
-        <ResponseField name="topics" type="string[]">AI-generated topics.</ResponseField>
-        <ResponseField name="summary" type="string | null">AI-generated summary.</ResponseField>
-        <ResponseField name="userTags" type="string[]">Tags you have manually added.</ResponseField>
-        <ResponseField name="userTopics" type="string[]">Topics you have manually added.</ResponseField>
-        <ResponseField name="userSummary" type="string | null">Summary you have manually written.</ResponseField>
-        <ResponseField name="status" type="string">Processing status, e.g. `completed`.</ResponseField>
-        <ResponseField name="messageCount" type="number">Total number of messages in the conversation.</ResponseField>
-      </Expandable>
-    </ResponseField>
-    <ResponseField name="projects" type="array">Projects this conversation is linked to.</ResponseField>
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="nextCursor" type="string | null">
-  Pass this value as the `cursor` query parameter to fetch the next page. `null` means you have reached the last page.
-</ResponseField>
-
 ---
 
 ### GET /conversations/:id
 
-Retrieve a single conversation by its UUID.
+Retrieve a single conversation by UUID.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the conversation.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Conversation UUID.</ParamField>
 
 ```bash
 curl "https://api.memorybase.app/conversations/a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
   -H "Authorization: Bearer <token>"
 ```
 
-**Example response**
-
-```json
-{
-  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "platform": "claude",
-  "title": "Debugging TypeScript generics",
-  "isArchived": false,
-  "createdAt": "2026-02-25T09:00:00.000Z",
-  "updatedAt": "2026-02-25T09:45:00.000Z",
-  "metadata": {
-    "tags": ["typescript", "generics"],
-    "topics": ["type-safety", "debugging"],
-    "summary": "Discussed how to debug complex TypeScript generic constraints.",
-    "userTags": [],
-    "userTopics": [],
-    "userSummary": null,
-    "status": "completed",
-    "messageCount": 24
-  },
-  "projects": []
-}
-```
-
-Returns `404` if the conversation does not exist or does not belong to you.
+Returns `404` if not found.
 
 ---
 
 ### GET /conversations/:id/messages
 
-List the messages in a conversation, ordered chronologically.
+List messages in a conversation, ordered chronologically.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the conversation.
-</ParamField>
-
-**Query parameters**
-
-<ParamField query="cursor" type="string">
-  UUID from a previous response's `nextCursor` field for pagination.
-</ParamField>
-
-<ParamField query="limit" type="number">
-  Maximum number of messages to return. Must be a positive integer, maximum `100`.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Conversation UUID.</ParamField>
+<ParamField query="cursor" type="string">Pagination cursor.</ParamField>
+<ParamField query="limit" type="number">Max results (max `100`).</ParamField>
 
 ```bash
 curl "https://api.memorybase.app/conversations/a1b2c3d4-e5f6-7890-abcd-ef1234567890/messages?limit=50" \
   -H "Authorization: Bearer <token>"
 ```
-
-**Example response**
 
 ```json
 {
@@ -202,42 +94,14 @@ curl "https://api.memorybase.app/conversations/a1b2c3d4-e5f6-7890-abcd-ef1234567
 }
 ```
 
-**Response fields**
-
-<ResponseField name="messages" type="array">
-  <Expandable title="Message object">
-    <ResponseField name="id" type="string">UUID of the message.</ResponseField>
-    <ResponseField name="conversationId" type="string">UUID of the parent conversation.</ResponseField>
-    <ResponseField name="role" type="string">Who sent the message — typically `user` or `assistant`.</ResponseField>
-    <ResponseField name="content" type="string">Text content of the message.</ResponseField>
-    <ResponseField name="timestamp" type="string | null">Original timestamp of the message on the source platform, or `null`.</ResponseField>
-    <ResponseField name="createdAt" type="string">ISO 8601 timestamp when this record was created in Memorybase.</ResponseField>
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="nextCursor" type="string | null">
-  Cursor for the next page, or `null` if this is the last page.
-</ResponseField>
-
 ---
 
 ### POST /conversations/:id/projects
 
-Set the projects associated with a conversation. This **replaces** the full set of linked projects — it is not additive.
+Replace the full set of linked projects for a conversation.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the conversation.
-</ParamField>
-
-**Body**
-
-<ParamField body="projectIds" type="string[]" required>
-  Array of project UUIDs to link to this conversation. Maximum 100 items. Pass an empty array to remove all project links.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Conversation UUID.</ParamField>
+<ParamField body="projectIds" type="string[]" required>Project UUIDs to link (max 100). Empty array removes all links.</ParamField>
 
 ```bash
 curl -X POST "https://api.memorybase.app/conversations/a1b2c3d4-e5f6-7890-abcd-ef1234567890/projects" \
@@ -246,67 +110,29 @@ curl -X POST "https://api.memorybase.app/conversations/a1b2c3d4-e5f6-7890-abcd-e
   -d '{"projectIds": ["d4e5f6a7-b8c9-0123-defa-234567890123"]}'
 ```
 
-**Example response**
-
-```json
-{ "success": true }
-```
-
-Returns `404` if the conversation or any of the specified projects are not found or are not owned by you.
+Returns `{ "success": true }`. Returns `404` if conversation or any project not found.
 
 ---
 
 ### GET /conversations/:id/projects
 
-List all projects currently linked to a conversation.
+List projects linked to a conversation.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the conversation.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Conversation UUID.</ParamField>
 
 ```bash
 curl "https://api.memorybase.app/conversations/a1b2c3d4-e5f6-7890-abcd-ef1234567890/projects" \
   -H "Authorization: Bearer <token>"
 ```
 
-**Example response**
-
-```json
-[
-  {
-    "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
-    "name": "TypeScript Research",
-    "description": "Notes on TypeScript generics and type safety",
-    "isArchived": false,
-    "version": 3,
-    "createdAt": "2026-02-20T10:00:00.000Z",
-    "updatedAt": "2026-02-25T09:45:00.000Z",
-    "addedAt": "2026-02-25T09:45:00.000Z"
-  }
-]
-```
-
 ---
 
 ### DELETE /conversations/:id/projects/:projectId
 
-Remove a single project link from a conversation without affecting other linked projects.
+Unlink a single project from a conversation.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the conversation.
-</ParamField>
-
-<ParamField path="projectId" type="string" required>
-  UUID of the project to unlink.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Conversation UUID.</ParamField>
+<ParamField path="projectId" type="string" required>Project UUID.</ParamField>
 
 ```bash
 curl -X DELETE \
@@ -314,21 +140,15 @@ curl -X DELETE \
   -H "Authorization: Bearer <token>"
 ```
 
-Returns `204 No Content` on success. Returns `404` if the conversation or project link is not found.
+Returns `204 No Content`. Returns `404` if not found.
 
 ---
 
 ### POST /conversations/:id/archive
 
-Archive a conversation so it no longer appears in your main view. The conversation and its messages are not deleted.
+Archive a conversation. Data is preserved, just hidden from main view.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the conversation to archive.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Conversation UUID.</ParamField>
 
 ```bash
 curl -X POST \
@@ -336,23 +156,15 @@ curl -X POST \
   -H "Authorization: Bearer <token>"
 ```
 
-**Example response**
-
-Returns the updated conversation object with `"isArchived": true`.
+Returns the updated conversation with `"isArchived": true`.
 
 ---
 
 ### POST /conversations/:id/unarchive
 
-Restore an archived conversation back to your main view.
+Restore an archived conversation.
 
-**Path parameters**
-
-<ParamField path="id" type="string" required>
-  UUID of the conversation to unarchive.
-</ParamField>
-
-**Example request**
+<ParamField path="id" type="string" required>Conversation UUID.</ParamField>
 
 ```bash
 curl -X POST \
@@ -360,6 +172,4 @@ curl -X POST \
   -H "Authorization: Bearer <token>"
 ```
 
-**Example response**
-
-Returns the updated conversation object with `"isArchived": false`.
+Returns the updated conversation with `"isArchived": false`.
