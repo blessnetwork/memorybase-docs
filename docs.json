@@ -1,0 +1,87 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "luma",
+  "name": "Memorybase",
+  "colors": {
+    "primary": "#040404",
+    "light": "#7c7c7c",
+    "dark": "#cacaca"
+  },
+  "favicon": "https://media.brand.dev/8b4025a0-369a-4e38-9030-7664133381ec.png",
+  "logo": {
+    "light": "https://media.brand.dev/70c1a15f-231c-4626-b34e-2b92d191c863.svg",
+    "dark": "https://media.brand.dev/70c1a15f-231c-4626-b34e-2b92d191c863.svg"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/blessnetwork/memorybase"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "authentication"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/conversations",
+              "features/projects",
+              "features/timeline",
+              "features/search",
+              "features/context-packs"
+            ]
+          },
+          {
+            "group": "Extension",
+            "pages": [
+              "extension/overview",
+              "extension/supported-platforms",
+              "extension/memory-injection",
+              "extension/profiles"
+            ]
+          },
+          {
+            "group": "Privacy & Data",
+            "pages": [
+              "privacy/overview",
+              "privacy/data-export"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/overview",
+              "api-reference/authentication"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api-reference/conversations",
+              "api-reference/projects",
+              "api-reference/timeline",
+              "api-reference/search",
+              "api-reference/sync",
+              "api-reference/settings"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

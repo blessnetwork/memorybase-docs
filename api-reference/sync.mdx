@@ -1,0 +1,245 @@
+---
+title: "Sync — Memorybase API Reference"
+description: "Low-level sync endpoints used by the Memorybase extension to push conversations, verify data integrity, and pull updated timelines and context packs."
+---
+
+The Sync API is the transport layer used by the Memorybase browser extension to keep your local data and the server in sync. The extension calls these endpoints automatically — you do not need to use them in normal circumstances. They are documented here for advanced integrations such as building your own client, migrating data, or debugging sync issues.
+
+<Note>
+  Unless you are building a custom Memorybase client, you should use the higher-level [Conversations](/api-reference/conversations), [Projects](/api-reference/projects), and [Timeline](/api-reference/timeline) endpoints instead.
+</Note>
+
+---
+
+### POST /sync/incremental
+
+Push a batch of create, update, or delete operations to the server. The server applies each operation and returns a summary of what was accepted.
+
+**Body**
+
+<ParamField body="lastSyncedAt" type="string | null" required>
+  ISO 8601 timestamp of the last successful sync, or `null` for the first sync.
+</ParamField>
+
+<ParamField body="operations" type="array" required>
+  Array of sync operations to apply.
+
+  <Expandable title="Operation fields">
+    <ParamField body="id" type="string" required>Client-generated identifier for this operation, used for idempotency.</ParamField>
+    <ParamField body="resourceType" type="string" required>The type of resource being synced. One of `conversation` or `message`.</ParamField>
+    <ParamField body="resourceId" type="string" required>The platform-side ID of the resource being synced.</ParamField>
+    <ParamField body="operation" type="string" required>The type of change. One of `create`, `update`, or `delete`.</ParamField>
+    <ParamField body="data" type="object">Optional payload for `create` and `update` operations — the fields that changed.</ParamField>
+    <ParamField body="timestamp" type="string" required>ISO 8601 timestamp of when this operation occurred on the client.</ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="browserCache" type="array">
+  Optional array of browser cache entries to record alongside the sync.
+
+  <Expandable title="Browser cache entry fields">
+    <ParamField body="clientId" type="string" required>Client-side identifier for this cache entry.</ParamField>
+    <ParamField body="url" type="string" required>The full URL that was visited.</ParamField>
+    <ParamField body="domain" type="string" required>Domain extracted from the URL.</ParamField>
+    <ParamField body="title" type="string">Page title at time of visit.</ParamField>
+    <ParamField body="favIconUrl" type="string">URL of the page's favicon.</ParamField>
+    <ParamField body="visitedAt" type="string" required>ISO 8601 timestamp of the visit.</ParamField>
+  </Expandable>
+</ParamField>
+
+**Example request**
+
+```bash
+curl -X POST "https://api.memorybase.app/sync/incremental" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "lastSyncedAt": "2026-02-25T09:00:00.000Z",
+    "operations": [
+      {
+        "id": "op-001",
+        "resourceType": "conversation",
+        "resourceId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "operation": "create",
+        "data": {
+          "platform": "claude",
+          "title": "Debugging TypeScript generics"
+        },
+        "timestamp": "2026-02-25T10:30:00.000Z"
+      }
+    ]
+  }'
+```
+
+**Example response**
+
+```json
+{
+  "state": "success",
+  "syncedAt": "2026-02-25T10:30:00.000Z",
+  "results": {
+    "conversation": {
+      "count": 1,
+      "ids": ["a1b2c3d4-e5f6-7890-abcd-ef1234567890"]
+    },
+    "message": {
+      "count": 3,
+      "ids": ["m1", "m2", "m3"]
+    }
+  }
+}
+```
+
+**Response fields**
+
+<ResponseField name="state" type="string">Overall result of the sync operation. One of `success`, `partial`, or `failed`.</ResponseField>
+<ResponseField name="syncedAt" type="string">ISO 8601 timestamp to store as `lastSyncedAt` for the next sync call.</ResponseField>
+<ResponseField name="results" type="object">Breakdown of synced records by resource type, each with a `count` and array of `ids`.</ResponseField>
+<ResponseField name="browserCacheAccepted" type="number">Number of browser cache entries that were accepted, if any were submitted.</ResponseField>
+
+---
+
+### GET /sync/status
+
+Retrieve a summary of how many conversations and messages are stored for your account on the server.
+
+**Example request**
+
+```bash
+curl "https://api.memorybase.app/sync/status" \
+  -H "Authorization: Bearer <token>"
+```
+
+**Example response**
+
+```json
+{
+  "userId": "user-abc123",
+  "conversationCount": 142,
+  "messageCount": 2847
+}
+```
+
+**Response fields**
+
+<ResponseField name="userId" type="string">Your user ID.</ResponseField>
+<ResponseField name="conversationCount" type="number">Total number of conversations stored on the server.</ResponseField>
+<ResponseField name="messageCount" type="number">Total number of messages stored on the server.</ResponseField>
+
+---
+
+### POST /sync/verify
+
+Check which conversation and message IDs from a given list are missing on the server. Use this to detect records that need to be re-synced.
+
+**Body**
+
+<ParamField body="conversations" type="string[]" required>
+  Array of conversation IDs (platform-side) to verify. Maximum 1000 items.
+</ParamField>
+
+<ParamField body="messages" type="string[]" required>
+  Array of message IDs to verify. Maximum 1000 items.
+</ParamField>
+
+**Example request**
+
+```bash
+curl -X POST "https://api.memorybase.app/sync/verify" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "conversations": ["chatgpt-conv-123"],
+    "messages": ["msg-456"]
+  }'
+```
+
+**Example response**
+
+```json
+{
+  "missingConversations": [],
+  "missingMessages": ["msg-456"]
+}
+```
+
+<ResponseField name="missingConversations" type="string[]">IDs from your `conversations` list that are not found on the server.</ResponseField>
+<ResponseField name="missingMessages" type="string[]">IDs from your `messages` list that are not found on the server.</ResponseField>
+
+---
+
+### POST /sync/timelines
+
+Pull updated timeline entries from the server by comparing local version fingerprints. The server returns only the entries whose fingerprints differ from what you provided, plus a list of deleted entry dates.
+
+**Body**
+
+<ParamField body="versions" type="object" required>
+  A map of date strings (`YYYY-MM-DD`) to the fingerprint string currently stored locally for that date. Example: `{ "2026-03-25": "1742000000000" }`.
+</ParamField>
+
+**Example request**
+
+```bash
+curl -X POST "https://api.memorybase.app/sync/timelines" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"versions": {"2026-03-25": "1742000000000"}}'
+```
+
+**Example response**
+
+```json
+{
+  "timelines": [],
+  "deleted": []
+}
+```
+
+<ResponseField name="timelines" type="array">Array of timeline entries that have changed since the versions you submitted. Each entry includes `date`, `summary`, `topics`, `fingerprint`, and `conversationIds`.</ResponseField>
+<ResponseField name="deleted" type="string[]">Date strings for timeline entries that have been deleted on the server.</ResponseField>
+
+---
+
+### POST /sync/context-packs
+
+Pull updated context packs from the server by comparing local version fingerprints. Returns only the packs that have changed, plus a list of deleted project IDs.
+
+**Body**
+
+<ParamField body="versions" type="object" required>
+  A map of project IDs to the fingerprint string currently stored locally for that project. Example: `{ "proj-abc123": "3_1740000000000" }`.
+</ParamField>
+
+**Example request**
+
+```bash
+curl -X POST "https://api.memorybase.app/sync/context-packs" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"versions": {"proj-abc123": "3_1740000000000"}}'
+```
+
+**Example response**
+
+```json
+{
+  "packs": [
+    {
+      "projectId": "proj-abc123",
+      "projectName": "My Project",
+      "description": "A project about TypeScript",
+      "sources": [],
+      "layers": [],
+      "tags": [],
+      "topics": [],
+      "fingerprint": "3_1740000000000",
+      "stats": { "completed": 5, "pending": 1, "failed": 0 }
+    }
+  ],
+  "deleted": []
+}
+```
+
+<ResponseField name="packs" type="array">Context pack entries that have changed. Each entry includes `projectId`, `projectName`, `description`, `sources`, `layers`, `tags`, `topics`, `fingerprint`, and `stats`.</ResponseField>
+<ResponseField name="deleted" type="string[]">Project IDs whose context packs have been deleted on the server.</ResponseField>

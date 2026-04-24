@@ -1,0 +1,123 @@
+---
+title: "Context packs: distilled project knowledge for AI"
+description: "Context packs distill everything Memorybase learned from a project's conversations into a structured, exportable document ready to inject into any AI prompt."
+---
+
+A context pack is a curated knowledge bundle that Memorybase builds from a project's conversations. Instead of pasting individual chat excerpts into a prompt, you get a single structured document — a distillation of what every conversation in the project covered — that you can inject into any AI tool to give it instant fluency in your project's history, terminology, and decisions.
+
+## How context packs are built
+
+When you add conversations to a project, Memorybase queues each one for processing. An LLM reads the full message thread and extracts a structured layer of knowledge. Each layer captures:
+
+- **`summary`** — a plain-language description of what the conversation covered and what the current state of work is
+- **`tags`** — lowercase, hyphenated keywords useful for search and filtering
+- **`topics`** — broader thematic categories
+- **`contexts`** — atomic, self-contained facts extracted from the conversation (e.g., "User prefers dark roast over medium", "User's RAM is 16GB")
+- **`entities`** — named things referenced in the conversation, each with a type and a short description
+- **`states`** — decisions, plans, and explorations that emerged (e.g., "decided to use Postgres", "exploring three caching strategies")
+
+Once all conversations in a project have been processed, Memorybase assembles the full context pack — a document that combines every layer with the project's own `name`, `description`, `topics`, and `tags`.
+
+<Note>
+  Processing happens automatically in the background. A conversation is queued for context pack extraction as soon as it's added to a project. The pack updates each time a new conversation is processed.
+</Note>
+
+## Context pack structure
+
+The assembled context pack has the following top-level structure:
+
+| Field | Description |
+|---|---|
+| `projectName` | The project's `name`. |
+| `description` | The project's `description`, if set. |
+| `topics` | Aggregated topics across all layers. |
+| `tags` | Aggregated tags across all layers. |
+| `layers` | One entry per conversation in the project. |
+| `version` | An integer that increments each time the pack is regenerated. |
+| `layerCount` | Total number of conversations in the project. |
+| `completedCount` | Number of conversations that have been successfully processed. |
+| `pendingCount` | Number still in the processing queue. |
+| `failedCount` | Number that failed during extraction. |
+
+Each entry in `layers` corresponds to one conversation:
+
+| Field | Description |
+|---|---|
+| `conversationId` | The conversation's ID. |
+| `platform` | The platform the conversation came from. |
+| `content` | The extracted layer: `summary`, `tags`, `topics`, `contexts`, `entities`, and `states`. |
+| `processedAt` | When this layer was extracted. |
+
+<Info>
+  The `completedCount`, `pendingCount`, and `failedCount` stats let you see at a glance whether a context pack is complete or still building. A pack is ready to use as soon as `completedCount` is greater than zero — you don't have to wait for all layers to finish.
+</Info>
+
+## Accessing a context pack
+
+Open the project detail view in the Memorybase extension and click **Context pack**. The pack is assembled on demand from all processed layers.
+
+If no conversations in the project have been processed yet, the context pack is unavailable and you'll see a message indicating that processing is in progress.
+
+## Exporting as Markdown
+
+Context packs can be exported as a Markdown document — a portable format that works in any AI tool that accepts pasted or uploaded text.
+
+<Steps>
+  <Step title="Open the project">
+    Navigate to the project whose context pack you want to export.
+  </Step>
+  <Step title="Click Export">
+    In the **Context pack** view, click **Export as Markdown**. Memorybase renders the full pack as a structured Markdown document and downloads it.
+  </Step>
+  <Step title="Use it in any AI tool">
+    Paste the Markdown into a system prompt, upload it as a file, or attach it as a custom instruction depending on which AI tool you're using. The document includes the project name, description, and all extracted layers formatted for readability.
+  </Step>
+</Steps>
+
+<Tip>
+  The Markdown export is especially useful for one-off sessions with AI tools that don't have a Memorybase integration. Paste the context pack at the top of your conversation to give the model instant project context.
+</Tip>
+
+## Versioning and regeneration
+
+The `version` field increments whenever the context pack is rebuilt. A rebuild happens when:
+
+- A new conversation is added to the project and processed.
+- You trigger a manual regeneration of the pack.
+
+Regeneration re-processes all conversations in the project using the latest extraction logic. This is useful if the extraction model has been updated or if earlier layers produced poor results.
+
+<Warning>
+  Regenerating a context pack replaces all existing layers. Conversations that previously failed may succeed on retry, but successfully processed layers will also be re-extracted, which may produce slightly different output.
+</Warning>
+
+## Using context packs in prompt injection workflows
+
+Context packs are designed for direct injection into AI prompts. A typical workflow:
+
+<Steps>
+  <Step title="Export or retrieve the context pack">
+    Export the Markdown file from the Memorybase extension, or retrieve the pack via the API for automated workflows.
+  </Step>
+  <Step title="Inject into your prompt">
+    Prepend the context pack content to your system prompt or the beginning of your conversation. The structured format — summary, entities, decisions, constraints — is parsed well by modern LLMs.
+  </Step>
+  <Step title="Ask your question">
+    With project context already loaded, the AI can answer questions about your project, suggest next steps, or draft code and content that fits your established conventions — without you having to re-explain anything.
+  </Step>
+</Steps>
+
+<AccordionGroup>
+  <Accordion title="What happens if a conversation fails processing?">
+    Failed conversations are counted in `failedCount`. They don't block the rest of the pack from being assembled — the pack includes all successfully processed layers. You can trigger a manual regeneration to retry failed layers.
+  </Accordion>
+  <Accordion title="Are context packs updated automatically when I add new conversations?">
+    Yes. Adding a conversation to a project queues it for extraction. Once extracted, the layer is included in the next pack assembly. The `version` field increments to reflect the update.
+  </Accordion>
+  <Accordion title="How long does context pack processing take?">
+    Processing time depends on conversation length and the number of conversations in the project. Most conversations complete within a few seconds. For large projects with many long conversations, full processing may take a few minutes. The `completedCount` and `pendingCount` fields show real-time progress.
+  </Accordion>
+  <Accordion title="Can I use a context pack from an archived project?">
+    Yes. Archiving a project does not delete its context pack. The pack remains accessible and exportable regardless of the project's `isArchived` state.
+  </Accordion>
+</AccordionGroup>

@@ -1,0 +1,221 @@
+---
+title: "Timeline — Memorybase API Reference"
+description: "Browse AI-generated daily and weekly summaries of your conversation activity, trigger generation for missing entries, and regenerate stale ones."
+---
+
+The Timeline API gives you access to your activity history as a series of dated entries. Each entry is an AI-generated summary of all the conversations that took place on a given day or week, along with extracted topics, tags, and individual conversation summaries. Entries are generated asynchronously — you can queue generation for missing dates and poll until they are ready.
+
+---
+
+### GET /timeline
+
+List timeline entries for your account, ordered from most recent to oldest.
+
+**Query parameters**
+
+<ParamField query="cursor" type="string">
+  A date string in `YYYY-MM-DD` format from a previous response's `nextCursor` field. Pass this to fetch older entries.
+</ParamField>
+
+<ParamField query="granularity" type="string">
+  The time resolution of each entry. One of `day` or `week`. Defaults to `day`.
+</ParamField>
+
+**Example request**
+
+```bash
+curl "https://api.memorybase.app/timeline?granularity=day&cursor=2026-02-25" \
+  -H "Authorization: Bearer <token>"
+```
+
+**Example response**
+
+```json
+{
+  "entries": [
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "date": "2026-02-25T00:00:00.000Z",
+      "summary": "Designed the timeline UI for {{MemoryBase}} and explored auth patterns.",
+      "tags": [],
+      "topics": ["Designed timeline UI and API for {{MemoryBase}}"],
+      "tagMappings": {
+        "MemoryBase": ["b2c3d4e5-f6a7-8901-bcde-f12345678901"]
+      },
+      "conversations": [
+        {
+          "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+          "title": "Debugging TypeScript generics",
+          "platform": "claude",
+          "tags": ["typescript", "generics"],
+          "topics": ["type-safety", "debugging"],
+          "summary": "Discussed how to debug complex TypeScript generic constraints.",
+          "isArchived": false,
+          "projectIds": ["proj-uuid-1"],
+          "projects": [{ "id": "proj-uuid-1", "name": "MemoryBase" }],
+          "createdAt": "2026-02-25T09:00:00.000Z",
+          "updatedAt": "2026-02-25T09:45:00.000Z"
+        }
+      ],
+      "status": "completed",
+      "processedAt": "2026-02-25T11:00:00.000Z",
+      "createdAt": "2026-02-25T10:00:00.000Z",
+      "updatedAt": "2026-02-25T11:00:00.000Z"
+    }
+  ],
+  "nextCursor": "2026-02-24"
+}
+```
+
+**Response fields**
+
+<ResponseField name="entries" type="array">
+  Array of timeline entry objects. Each entry is either a fully processed entry or a placeholder.
+
+  <Expandable title="Full entry fields">
+    <ResponseField name="id" type="string">UUID of the timeline entry.</ResponseField>
+    <ResponseField name="date" type="string">ISO 8601 timestamp representing the start of the day or week.</ResponseField>
+    <ResponseField name="summary" type="string | null">AI-generated prose summary of the day's activity. May contain `{{ProjectName}}` references that link to project IDs via `tagMappings`.</ResponseField>
+    <ResponseField name="tags" type="string[]">Aggregated tags from all conversations for this period.</ResponseField>
+    <ResponseField name="topics" type="string[]">Aggregated topics from all conversations for this period.</ResponseField>
+    <ResponseField name="tagMappings" type="object | null">Map of project name placeholders used in `summary` to arrays of conversation UUIDs. Keys match the text inside `{{...}}` in the summary string.</ResponseField>
+    <ResponseField name="conversations" type="array">Array of conversation summaries included in this entry.</ResponseField>
+    <ResponseField name="status" type="string">Processing status, e.g. `completed`, `processing`, `not_generated`.</ResponseField>
+    <ResponseField name="processedAt" type="string | null">Timestamp when processing finished, or `null` if still pending.</ResponseField>
+    <ResponseField name="createdAt" type="string">Timestamp when this entry was first created.</ResponseField>
+    <ResponseField name="updatedAt" type="string">Timestamp when this entry was last updated.</ResponseField>
+  </Expandable>
+
+  <Expandable title="Placeholder entry fields (status: not_generated or unavailable)">
+    <ResponseField name="date" type="string">Date for the placeholder entry.</ResponseField>
+    <ResponseField name="summary" type="null">Always `null` for placeholders.</ResponseField>
+    <ResponseField name="status" type="string">Either `not_generated` or `unavailable`.</ResponseField>
+    <ResponseField name="conversations" type="array">Conversations that exist for this date but have not yet been summarised.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="nextCursor" type="string | null">
+  A `YYYY-MM-DD` date string to pass as `cursor` for the next page, or `null` if there are no older entries.
+</ResponseField>
+
+---
+
+### GET /timeline/:date
+
+Retrieve the timeline entry for a specific date.
+
+**Path parameters**
+
+<ParamField path="date" type="string" required>
+  The date to retrieve in `YYYY-MM-DD` format, e.g. `2026-02-25`.
+</ParamField>
+
+<Note>
+  If the entry exists but is still being processed, the server returns `202 Accepted` with the current entry state (which will have `status: "processing"`). Poll the endpoint until you receive `200 OK`.
+</Note>
+
+**Example request**
+
+```bash
+curl "https://api.memorybase.app/timeline/2026-02-25" \
+  -H "Authorization: Bearer <token>"
+```
+
+**Example response** — `200 OK`
+
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "date": "2026-02-25T00:00:00.000Z",
+  "summary": "Designed the timeline UI for {{MemoryBase}} and explored auth patterns.",
+  "tags": [],
+  "topics": ["Designed timeline UI and API for {{MemoryBase}}"],
+  "tagMappings": {
+    "MemoryBase": ["b2c3d4e5-f6a7-8901-bcde-f12345678901"]
+  },
+  "conversations": [
+    {
+      "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+      "title": "Debugging TypeScript generics",
+      "platform": "claude",
+      "tags": ["typescript", "generics"],
+      "topics": ["type-safety", "debugging"],
+      "summary": "Discussed how to debug complex TypeScript generic constraints.",
+      "isArchived": false,
+      "projectIds": ["proj-uuid-1"],
+      "projects": [{ "id": "proj-uuid-1", "name": "MemoryBase" }],
+      "createdAt": "2026-02-25T09:00:00.000Z",
+      "updatedAt": "2026-02-25T09:45:00.000Z"
+    }
+  ],
+  "status": "completed",
+  "processedAt": "2026-02-25T11:00:00.000Z",
+  "createdAt": "2026-02-25T10:00:00.000Z",
+  "updatedAt": "2026-02-25T11:00:00.000Z"
+}
+```
+
+Returns `404` if no conversations exist for the given date.
+
+---
+
+### POST /timeline/generate
+
+Queue generation of timeline entries for all dates that are missing one. This is a fire-and-forget operation — the endpoint returns immediately while generation runs in the background.
+
+**Example request**
+
+```bash
+curl -X POST "https://api.memorybase.app/timeline/generate" \
+  -H "Authorization: Bearer <token>"
+```
+
+**Example response** — `202 Accepted`
+
+```json
+{ "message": "Timeline generation queued" }
+```
+
+<Tip>
+  After calling this endpoint, poll `GET /timeline/:date` for the specific dates you care about until they return `200 OK` with `status: "completed"`.
+</Tip>
+
+---
+
+### POST /timeline/:id/regenerate
+
+Queue a specific timeline entry for regeneration. Useful when a summary is stale or incorrect. Returns `202 Accepted` with the current entry state while regeneration runs in the background.
+
+**Path parameters**
+
+<ParamField path="id" type="string" required>
+  UUID of the timeline entry to regenerate.
+</ParamField>
+
+**Example request**
+
+```bash
+curl -X POST \
+  "https://api.memorybase.app/timeline/a1b2c3d4-e5f6-7890-abcd-ef1234567890/regenerate" \
+  -H "Authorization: Bearer <token>"
+```
+
+**Example response** — `202 Accepted`
+
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "date": "2026-02-25T00:00:00.000Z",
+  "summary": "Designed the timeline UI for {{MemoryBase}} and explored auth patterns.",
+  "tags": [],
+  "topics": ["Designed timeline UI and API for {{MemoryBase}}"],
+  "tagMappings": { "MemoryBase": ["b2c3d4e5-f6a7-8901-bcde-f12345678901"] },
+  "conversations": [],
+  "status": "processing",
+  "processedAt": null,
+  "createdAt": "2026-02-25T10:00:00.000Z",
+  "updatedAt": "2026-02-25T10:05:00.000Z"
+}
+```
+
+Returns `404` if the timeline entry UUID does not exist or does not belong to you.

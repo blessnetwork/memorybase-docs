@@ -1,0 +1,81 @@
+---
+title: "Memorybase REST API: base URL, auth, and errors"
+description: "The Memorybase API gives programmatic access to conversations, projects, timeline, search, and settings. All endpoints require a bearer token and return JSON."
+---
+
+The Memorybase API gives you programmatic access to all the data that the browser extension collects and organises on your behalf. Every endpoint is served over HTTPS from a single base URL, accepts JSON request bodies, and returns JSON responses. Authentication is handled via a bearer token that you obtain through the extension's sign-in flow.
+
+## Base URL
+
+```
+https://api.memorybase.app
+```
+
+All paths in this reference are relative to this base URL.
+
+## Authentication
+
+Every request must include a bearer token in the `Authorization` header:
+
+```bash
+Authorization: Bearer <your-token>
+```
+
+See the [Authentication](/api-reference/authentication) page for details on obtaining and managing tokens.
+
+## Request and response format
+
+All request bodies must be sent with `Content-Type: application/json`. All successful responses return `Content-Type: application/json` unless otherwise noted (the context-pack export endpoint returns `text/markdown`).
+
+## Pagination
+
+List endpoints use **cursor-based pagination**. Pass the `cursor` value from a previous response's `nextCursor` field to fetch the next page. When `nextCursor` is `null` there are no more results.
+
+```bash
+# First page
+curl "https://api.memorybase.app/conversations?limit=20" \
+  -H "Authorization: Bearer <token>"
+
+# Next page using the cursor from the previous response
+curl "https://api.memorybase.app/conversations?limit=20&cursor=<nextCursor>" \
+  -H "Authorization: Bearer <token>"
+```
+
+Timeline pagination uses `YYYY-MM-DD` date strings as cursors instead of UUIDs.
+
+## Error responses
+
+All errors follow a consistent shape. For most resources the error body is:
+
+```json
+{ "error": "Not found" }
+```
+
+For resources in the Projects, Timeline, Search, and Settings groups the body uses the extended form:
+
+```json
+{ "error": { "message": "Project not found", "status": 404 } }
+```
+
+| Status code | Meaning |
+|-------------|---------|
+| `400` | Bad request — a required parameter is missing or invalid |
+| `401` | Unauthorized — the bearer token is missing or has expired |
+| `404` | Not found — the requested resource does not exist or is not owned by you |
+| `413` | Payload too large — file upload exceeds the 2 MB limit |
+| `500` | Internal server error — something went wrong on the server |
+
+## Rate limiting
+
+The API enforces rate limits to ensure fair usage. If you exceed the limit you will receive a `429 Too Many Requests` response. Implement exponential back-off and retry logic in your integration.
+
+## Available resources
+
+| Resource | Description |
+|----------|-------------|
+| [Conversations](/api-reference/conversations) | List, retrieve, and manage the AI conversations the extension has captured |
+| [Projects](/api-reference/projects) | Organise conversations into projects and manage notes, URLs, and code snippets |
+| [Timeline](/api-reference/timeline) | Browse AI-generated daily or weekly summaries of your activity |
+| [Search](/api-reference/search) | Full-text search across projects and conversations |
+| [Sync](/api-reference/sync) | Low-level sync endpoints used by the extension; available for advanced integrations |
+| [Settings](/api-reference/settings) | Read and update your profile, linked accounts, and avatar |

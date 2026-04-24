@@ -1,0 +1,106 @@
+---
+title: "Supported AI platforms and adapter health states"
+description: "Memorybase integrates with ChatGPT, Claude, Gemini, and any site via manual mode. Learn what each adapter capability does and how to handle degraded status."
+---
+
+Memorybase connects to AI platforms using a modular adapter system. Each adapter handles one site and provides specific capabilities — automatic conversation capture, toolbar injection, save buttons on individual messages, and prompt injection. When a site updates its interface, some capabilities may stop working while others continue. The extension reports this through an adapter health status rather than failing silently.
+
+## Supported platforms
+
+<CardGroup cols={2}>
+  <Card title="ChatGPT" icon="robot">
+    **chatgpt.com** and **chat.openai.com**
+
+    Full integration with automatic conversation capture and context injection. Highest priority platform.
+  </Card>
+  <Card title="Claude" icon="sparkles">
+    **claude.ai**
+
+    Full integration with automatic conversation capture and context injection. Highest priority platform.
+  </Card>
+  <Card title="Gemini" icon="star">
+    **gemini.google.com**
+
+    Adapter present — conversation capture support is actively being developed. Some capabilities may be limited.
+  </Card>
+  <Card title="Any site" icon="globe">
+    **Universal fallback**
+
+    Always available on any webpage via the right-click context menu. Use this to save content from sites without a dedicated adapter.
+  </Card>
+</CardGroup>
+
+## Adapter capabilities
+
+Each adapter can provide up to four capabilities. Whether a capability works on your current tab determines which features are available to you.
+
+<AccordionGroup>
+  <Accordion title="autoCapture — automatic conversation detection">
+    When active, Memorybase detects when you send a message and when the AI finishes responding, then saves that exchange to your memory automatically. You don't need to do anything.
+
+    If this capability is broken, you can still save conversations manually via the right-click context menu.
+  </Accordion>
+  <Accordion title="inputDetection — toolbar injection">
+    Memorybase locates the chat input field and attaches the overlay button next to it. This is what lets you open the memory popup and attach context without leaving the page.
+
+    If this capability is broken, you won't see the overlay on that site. Use the extension popup instead.
+  </Accordion>
+  <Accordion title="messageActions — save buttons on messages">
+    A save button appears when you hover over individual messages in the conversation. This lets you retroactively save a specific exchange you didn't capture automatically.
+
+    If this capability is broken, use text selection and the right-click context menu to save specific content.
+  </Accordion>
+  <Accordion title="promptInjection — insert context into the input field">
+    When you attach memories and confirm, Memorybase writes the context directly into the chat input field alongside your prompt.
+
+    If this capability is broken, the selected context is copied to your clipboard instead, and you paste it manually.
+  </Accordion>
+</AccordionGroup>
+
+## Adapter health states
+
+The extension monitors each adapter's health and reports one of three states.
+
+| Status | What it means |
+|--------|---------------|
+| **Healthy** | All capabilities are functional. The full Memorybase experience is available. |
+| **Degraded** | Some capabilities have stopped working. Fallbacks are active for the broken ones, but you may notice missing features. |
+| **Broken** | No capabilities are functional. Only manual mode is available — use the right-click context menu to save content. |
+
+You can see the adapter status for your current tab in the extension popup under **Integrations**.
+
+<Warning>
+  AI platforms update their interfaces frequently without notice. When an adapter breaks, Memorybase falls back to manual mode so you never lose access entirely. Adapter fixes are released as patch updates.
+</Warning>
+
+## Saving from any webpage
+
+Even without a dedicated adapter, you can save any text from any site using the right-click context menu.
+
+<Steps>
+  <Step title="Select the text you want to save">
+    Highlight any text on the page — a useful passage, a code snippet, a reference you want to keep.
+  </Step>
+  <Step title="Right-click and choose Save to Memorybase">
+    Right-click the selected text. You'll see **Save to Memorybase** in the context menu.
+  </Step>
+  <Step title="Confirm">
+    Click the option. The selected text is saved to your active profile's memory with the current page URL and title as the source.
+  </Step>
+</Steps>
+
+<Tip>
+  The right-click save option works on any webpage, including PDF viewers, documentation sites, and research papers — not just AI chat interfaces.
+</Tip>
+
+## When an adapter shows degraded or broken status
+
+If the extension popup shows a degraded or broken status for a platform you use:
+
+1. **Check for an extension update.** Adapter fixes are released as patches. Open `chrome://extensions` and check if an update is available.
+2. **Use manual mode in the meantime.** The right-click context menu is always available to save content.
+3. **Check the Memorybase status page** if an update doesn't resolve the issue, in case the adapter is actively being patched.
+
+<Note>
+  Degraded status doesn't mean nothing works — Memorybase activates fallbacks for each broken capability individually. You may still have automatic capture even if the toolbar is not injecting, for example.
+</Note>

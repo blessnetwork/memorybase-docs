@@ -1,0 +1,128 @@
+---
+title: "Conversations: capture and organize AI exchanges"
+description: "Memorybase captures AI conversations from ChatGPT, Claude, and Gemini, enriching each one with AI-generated tags, topics, and summaries automatically."
+---
+
+Every time you chat with ChatGPT or Claude, Memorybase captures that exchange as a conversation — a structured record that includes the full message thread, platform metadata, and AI-generated enrichment. Conversations are the primary unit of memory in Memorybase, and nearly everything else — projects, the timeline, search — is built on top of them.
+
+## Supported platforms
+
+Memorybase captures conversations from the following platforms. The `platform` field on each conversation reflects where it originated:
+
+<CardGroup cols={2}>
+  <Card title="ChatGPT" icon="comments">
+    Captured from `chatgpt.com` and `chat.openai.com`. Platform value: `chatgpt`.
+  </Card>
+  <Card title="Claude" icon="comments">
+    Captured from `claude.ai`. Platform value: `claude`.
+  </Card>
+  <Card title="Gemini" icon="comments">
+    Captured from `gemini.google.com`. Platform value: `gemini`.
+  </Card>
+  <Card title="Manual" icon="hand">
+    Saved via the right-click context menu on any page. Platform value: `manual`.
+  </Card>
+</CardGroup>
+
+<Note>
+  Platform adapters monitor their own health. If a site's DOM changes in a way that disrupts automatic capture, Memorybase degrades gracefully to manual mode and notifies you via the extension popup.
+</Note>
+
+## How conversations are organized
+
+Each conversation carries a set of fields that let you filter, search, and link it to projects:
+
+| Field | Description |
+|---|---|
+| `platform` | The AI platform where the conversation was captured (`chatgpt`, `claude`, `gemini`, `manual`). |
+| `title` | The conversation title, extracted from the platform when available. |
+| `isArchived` | Whether the conversation has been archived. Archived conversations are hidden from the default view. |
+| `metadata.tags` | Short, hyphenated keywords extracted by the LLM (e.g., `typescript`, `generics`). |
+| `metadata.topics` | Broader theme categories extracted by the LLM (e.g., `type-safety`, `debugging`). |
+| `metadata.summary` | A one-paragraph AI-generated summary of what the conversation covered. |
+| `metadata.userTags` | Tags you've added manually. |
+| `metadata.userTopics` | Topics you've added manually. |
+| `metadata.userSummary` | A custom summary you've written, if you prefer your own description. |
+| `metadata.messageCount` | The total number of messages in the conversation. |
+| `metadata.status` | Processing state: `completed` means enrichment is done; other states indicate processing is still in progress. |
+
+<Tip>
+  The AI-generated `metadata.summary` is especially useful when you return to an old conversation — it gives you a plain-language briefing on what was covered without re-reading every message.
+</Tip>
+
+## Viewing conversations in the extension
+
+Open the Memorybase extension popup and navigate to the **Conversations** tab. Conversations are listed in reverse-chronological order. You can filter by platform using the dropdown at the top of the list.
+
+Click any conversation to see its detail view, which shows:
+
+- The conversation title and platform
+- The AI-generated summary, tags, and topics
+- The total message count
+- Any projects the conversation belongs to
+
+## Browsing messages
+
+Inside a conversation detail view, you can scroll through the full message thread. Messages are loaded in pages — if a conversation is long, the next batch loads as you scroll. Each message shows:
+
+- **Role** — `user` or `assistant`
+- **Content** — the full message text
+- **Timestamp** — when the message was sent, if available from the platform
+
+<Info>
+  Message content is sanitized on-device before syncing. Personally identifiable information is scrubbed before anything leaves your browser.
+</Info>
+
+## Archiving and unarchiving conversations
+
+Archiving removes a conversation from your main view without deleting it. This is useful for conversations that have served their purpose but that you want to keep for reference.
+
+<Steps>
+  <Step title="Open the conversation">
+    In the extension popup, click the conversation you want to archive.
+  </Step>
+  <Step title="Archive it">
+    Click the **Archive** button in the conversation detail view. The conversation's `isArchived` field is set to `true` and it disappears from the default list.
+  </Step>
+  <Step title="Unarchive if needed">
+    To restore an archived conversation, open the **Archived** view from the conversations filter menu, find the conversation, and click **Unarchive**. Its `isArchived` field returns to `false`.
+  </Step>
+</Steps>
+
+<Warning>
+  Archiving a conversation does not remove it from any projects it belongs to. If you want to fully exclude it from a project's context pack, remove it from the project separately.
+</Warning>
+
+## Linking conversations to projects
+
+You can associate a conversation with one or more projects, which groups it with related conversations and sources for richer context.
+
+To link a conversation to a project, open the conversation detail view and click **Add to project**. Select the project from the list. You can add a conversation to up to 100 projects at once.
+
+To remove a link, open the conversation's project list and click **Remove** next to the project you want to unlink.
+
+<Tip>
+  You can also link conversations from the project side — see the [Projects](/features/projects) page for details on adding conversations to a project in bulk.
+</Tip>
+
+## Metadata and AI enrichment
+
+After a conversation syncs, the Memorybase backend sends it through an LLM that extracts:
+
+- **Tags** — concise keywords useful for filtering and search (`metadata.tags`)
+- **Topics** — broader thematic categories (`metadata.topics`)
+- **Summary** — a plain-language description of what was covered (`metadata.summary`)
+
+This enrichment happens automatically. You do not need to tag or categorize conversations yourself, though you can supplement or override the AI output using `metadata.userTags`, `metadata.userTopics`, and `metadata.userSummary` if you prefer your own labels.
+
+<AccordionGroup>
+  <Accordion title="Why is my conversation showing a different status?">
+    Conversations go through a processing pipeline after syncing. If `metadata.status` is not `completed`, enrichment is still in progress. This usually resolves within a few seconds to a minute depending on conversation length and backend load.
+  </Accordion>
+  <Accordion title="Can I edit the AI-generated summary or tags?">
+    Yes. Use `metadata.userSummary`, `metadata.userTags`, and `metadata.userTopics` to store your own values. These fields sit alongside the AI-generated ones — both are available in search and context packs.
+  </Accordion>
+  <Accordion title="What happens to a conversation's metadata if I archive it?">
+    Nothing — archiving only sets `isArchived` to `true`. All metadata, messages, and project links are preserved. You can unarchive at any time without losing anything.
+  </Accordion>
+</AccordionGroup>

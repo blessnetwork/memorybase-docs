@@ -1,0 +1,65 @@
+---
+title: "Authenticate requests to the Memorybase API"
+description: "Memorybase API requests require a bearer token obtained via email OTP sign-in. Pass it in the Authorization header on every call to authenticate."
+---
+
+Every request to the Memorybase API must be authenticated with a bearer token. The token is a session credential issued after you verify your identity through the email OTP flow. If you are using the browser extension, the extension stores and manages this token automatically — you do not need to handle it yourself.
+
+## Obtaining a token
+
+Tokens are issued through the Memorybase sign-in flow:
+
+1. Open the Memorybase extension and enter your email address.
+2. Memorybase sends a one-time passcode (OTP) to that address.
+3. Enter the OTP in the extension. On successful verification, the extension receives and securely stores a session bearer token.
+
+For direct API access, retrieve the token from the extension's storage or from the session cookie set by the Memorybase web app after OTP verification.
+
+## Passing the token
+
+Include the token in the `Authorization` header of every request using the `Bearer` scheme:
+
+```
+Authorization: Bearer <your-token>
+```
+
+**Example request**
+
+```bash
+curl https://api.memorybase.app/settings/profile \
+  -H "Authorization: Bearer <your-token>"
+```
+
+**Example response**
+
+```json
+{
+  "id": "user-abc123",
+  "email": "user@example.com",
+  "name": "Jane Doe",
+  "emailVerified": true,
+  "image": null,
+  "tier": "pro",
+  "createdAt": "2026-02-25T10:00:00.000Z"
+}
+```
+
+## Token expiry and refresh
+
+Sessions persist as long as they remain active. If your token expires or is revoked, the API returns `401 Unauthorized`. Re-authenticate by going through the OTP flow again in the extension or the web app to receive a new token.
+
+There is no programmatic token refresh endpoint — re-authentication is always via OTP.
+
+<Warning>
+  Treat your bearer token like a password. Do not commit it to version control, log it to the console, or expose it in client-side code. Anyone who holds your token can access all of your Memorybase data.
+</Warning>
+
+## Unauthenticated responses
+
+If you omit the `Authorization` header or supply an invalid token, the API responds with:
+
+```json
+{ "error": "Unauthorized" }
+```
+
+with HTTP status `401`.

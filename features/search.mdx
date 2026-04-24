@@ -1,0 +1,153 @@
+---
+title: "Search: find conversations and projects instantly"
+description: "Search queries conversations and projects together in one request, with relevance ranking, type filters, and offset pagination for large result sets."
+---
+
+Search in Memorybase works across both conversations and projects simultaneously. Type a phrase and you get back a ranked list of matches from both collections — no need to search each one separately. You can narrow results to a single type when you know what you're looking for, or leave the filter open to surface everything relevant.
+
+## How search works
+
+Memorybase uses full-text search with relevance ranking. Results are ordered by how closely they match your query — conversations match on title, platform, tags, topics, and summary content; projects match on name and description.
+
+The query is passed as the `q` parameter. Results come back in a unified list with a `type` field on each item (`project` or `conversation`) so you can render them differently if needed.
+
+## Basic search
+
+Enter a search term in the search bar in the extension popup. Memorybase queries both conversations and projects and returns up to 5 results by default.
+
+```
+q=typescript
+```
+
+Results include both projects named or described around TypeScript and conversations that mention TypeScript in their title, tags, topics, or summary.
+
+## Empty query — recent items as suggestions
+
+If you open search without typing anything, Memorybase returns your most recently updated conversations and projects as suggestions. This is useful for quickly picking up where you left off.
+
+When `q` is empty:
+- With no type filter: recent projects and recent conversations are returned together.
+- With `type=projects`: only recent projects are returned.
+- With `type=conversations`: only recent conversations are returned.
+
+<Tip>
+  The suggestions behavior makes search useful as a launcher — click into the search field to instantly see your most recent work without typing anything.
+</Tip>
+
+## Filtering by type
+
+You can restrict results to a single type in two ways: the `type` query parameter, or a prefix in the query string itself.
+
+**Using the `type` parameter:**
+
+```
+q=react&type=projects
+```
+
+Returns only projects matching "react".
+
+```
+q=react&type=conversations
+```
+
+Returns only conversations matching "react".
+
+**Using a query prefix:**
+
+You can type `type:projects` or `type:conversations` directly in the search field, and Memorybase parses it out automatically:
+
+```
+q=type:projects react
+```
+
+This is equivalent to `q=react&type=projects`. The prefix is stripped from the query before searching, so you search for "react" within projects only.
+
+<Info>
+  The `type` parameter and query prefix are interchangeable. If both are present, the `type` parameter takes precedence.
+</Info>
+
+## Pagination
+
+Use `limit` and `offset` to paginate through large result sets:
+
+| Parameter | Description | Default | Max |
+|---|---|---|---|
+| `limit` | Number of results to return per page. | `5` | `100` |
+| `offset` | Number of results to skip before returning. | `0` | — |
+
+The response includes a `total` count so you can calculate how many pages exist:
+
+```json
+{
+  "results": [...],
+  "total": 47,
+  "limit": 10,
+  "offset": 0,
+  "filter": "conversations",
+  "query": "typescript"
+}
+```
+
+To fetch the next page: `offset=10`, then `offset=20`, and so on.
+
+## Result shape
+
+Each result in the `results` array has a `type` field and a `data` object:
+
+**Project result:**
+
+```json
+{
+  "type": "project",
+  "data": {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "React + TypeScript App",
+    "description": "Tracking conversations about building a React application with TypeScript",
+    "isArchived": false,
+    "createdAt": "2026-02-25T10:00:00.000Z",
+    "updatedAt": "2026-02-25T10:00:00.000Z"
+  }
+}
+```
+
+**Conversation result:**
+
+```json
+{
+  "type": "conversation",
+  "data": {
+    "id": "conv-abc123",
+    "platform": "chatgpt",
+    "title": "React hooks deep dive",
+    "isArchived": false,
+    "createdAt": "2026-02-25T10:00:00.000Z",
+    "updatedAt": "2026-02-25T10:00:00.000Z",
+    "metadata": {
+      "tags": ["react", "hooks"],
+      "topics": ["frontend"],
+      "summary": "Discussion about React hooks patterns"
+    }
+  }
+}
+```
+
+## Search examples
+
+<AccordionGroup>
+  <Accordion title="Find everything about TypeScript">
+    Search with `q=typescript` and no type filter. Results include projects you've created around TypeScript work and conversations where TypeScript appeared in the title, tags, topics, or summary.
+  </Accordion>
+  <Accordion title="Find only projects related to a client">
+    Use `q=client-name&type=projects` to restrict results to projects. This is useful when you have many conversations on a topic but want to jump directly to the project that organizes them.
+  </Accordion>
+  <Accordion title="Find conversations from a specific platform">
+    Search is full-text, so platform filtering isn't a dedicated search parameter. Instead, browse the conversations list filtered by platform — see [Conversations](/features/conversations) for details. Search is best used for topical queries across all platforms at once.
+  </Accordion>
+  <Accordion title="Get the most recent conversations quickly">
+    Leave `q` empty and set `type=conversations` to get your most recently updated conversations without typing a search term.
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+  Archived conversations and archived projects are included in search results unless you filter them out in your own application logic. The `isArchived` field is present on every result item so you can identify and hide them if needed.
+</Warning>

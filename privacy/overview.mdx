@@ -1,0 +1,106 @@
+---
+title: "Privacy & Data: How Memorybase Handles Your Information"
+description: "Learn where Memorybase stores your memories, how encryption works, what each Chrome permission does, and which privacy controls you have."
+---
+
+Memorybase is built on a local-first principle: your memories and embeddings never leave your browser unless you choose to export them. All processing — including generating the vector embeddings that power memory search — happens on your device. This page explains exactly where each type of data lives, how it is protected, and what controls you have over it.
+
+## Where your data lives
+
+Every piece of data Memorybase handles stays on your device by default.
+
+| Data type | Where it's stored | Leaves your browser? |
+|-----------|-------------------|----------------------|
+| Memories | Local browser storage | Never, unless you export |
+| Embeddings | Local browser storage | Never |
+| Settings | Local browser storage | Only if you enable Chrome Sync |
+| Embedding model | Local browser cache | Downloaded once from CDN |
+
+<Note>
+  Enabling Chrome Sync (a built-in Chrome feature) will sync your Memorybase settings — such as your whitelist and theme — across your signed-in devices. Your memories and embeddings are never included in Chrome Sync.
+</Note>
+
+## On-device PII sanitization
+
+Before any data is processed or synced to the cloud, Memorybase scrubs conversations on-device to remove personally identifiable information (PII). This sanitization step runs locally inside the extension — your raw conversation text is never transmitted externally.
+
+## Encryption
+
+### Local storage
+
+Local encryption is optional. If you set a password in **Settings → Security**, Memorybase encrypts your locally stored data using AES-256. Without a password, data is stored unencrypted on your device — protected only by Chrome's standard storage isolation.
+
+<Tip>
+  Enable local encryption if you share a device or are concerned about physical access to your machine. You will need your password to access your data, so store it somewhere safe.
+</Tip>
+
+### Export files
+
+Export files are always encrypted with a password you set at export time. You must provide this password when importing the file. There is no way to recover an export file if you lose the password.
+
+### Data in transit
+
+Memorybase uses HTTPS for all network communication. The only outbound request the extension makes is the one-time download of the embedding model from a CDN. No memory content, embeddings, or conversation data is ever sent to a third party.
+
+## Chrome permissions
+
+Memorybase requests the minimum permissions needed to do its job. Here is what each permission means for you.
+
+<AccordionGroup>
+  <Accordion title="storage">
+    Allows Memorybase to save your settings and site whitelist locally using Chrome's built-in storage. Without this, your preferences would reset every time you closed the browser.
+  </Accordion>
+  <Accordion title="activeTab">
+    Allows Memorybase to read the content of the tab you are currently viewing. This is scoped to the single active tab — the extension cannot read other tabs in the background or access your browsing history.
+  </Accordion>
+  <Accordion title="scripting">
+    Allows Memorybase to inject its toolbar into supported AI chat pages. Without this, the overlay buttons and memory controls would not appear in the chat interface.
+  </Accordion>
+  <Accordion title="tabs (optional)">
+    An optional permission you can grant if you want multi-tab awareness. When enabled, Memorybase can coordinate context across multiple open AI chat tabs simultaneously. This permission is off by default and is never requested without your action.
+  </Accordion>
+</AccordionGroup>
+
+**Host permissions** — Memorybase is only permitted to operate on `chatgpt.com`, `chat.openai.com`, and `claude.ai`. These host permissions are required for the extension to read and interact with conversations on those platforms. Memorybase cannot run on any other site unless you explicitly add it to your whitelist.
+
+## Privacy controls
+
+You decide what Memorybase captures, when it captures, and how long it keeps anything.
+
+<CardGroup cols={2}>
+  <Card title="Site whitelist" icon="list-check">
+    Memorybase only captures conversations on sites you have explicitly enabled. No site is observed by default — you must add it to your whitelist in **Settings → Sites**.
+  </Card>
+  <Card title="Pause capture" icon="circle-pause">
+    One click on the **Pause** button in the toolbar stops all capture immediately. No data is recorded while paused. Click again to resume.
+  </Card>
+  <Card title="Delete memories" icon="trash">
+    Deleting a memory from the memory browser is immediate and permanent. There is no trash or recovery — the memory is gone the moment you confirm deletion.
+  </Card>
+  <Card title="Export and wipe" icon="box-archive">
+    You can export a full encrypted backup of all your data, then wipe everything from local storage in one action. See [Export & wipe](/privacy/data-export) for step-by-step instructions.
+  </Card>
+</CardGroup>
+
+### Telemetry
+
+Telemetry is **off by default**. Memorybase does not collect any usage data unless you opt in. If you choose to enable it in **Settings → Privacy**, only anonymous usage statistics are sent — never memory content, conversation text, or any personally identifiable data.
+
+## Storage limits and warnings
+
+Memorybase monitors your storage and alerts you before you run out of space.
+
+| Threshold | What happens |
+|-----------|--------------|
+| 80% full | Warning notification appears; auto-save continues |
+| 95% full | Auto-save pauses until you free space |
+
+You can configure how Memorybase manages storage in **Settings → Storage**:
+
+- **Max memories per profile** — defaults to 1,000; configurable from 100 to 5,000
+- **Retention period** — choose 30, 90, 180, or 365 days, or keep memories forever
+- **Cleanup strategy** — when the limit is reached, Memorybase can delete the oldest memories first, least-accessed memories first, or lowest-relevance memories first
+
+<Note>
+  When storage hits 95%, a one-click cleanup suggestion appears — for example, "Delete 50 oldest memories to free 5 MB." You remain in control of what gets removed.
+</Note>
