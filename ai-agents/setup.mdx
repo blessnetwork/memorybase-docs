@@ -1,33 +1,170 @@
 ---
 title: "Setup"
-description: "Install the MemoryBase CLI for your AI agents."
+description: "Connect MemoryBase to OpenClaw, Hermes Agent, or any AI agent that supports MCP."
 ---
 
 ## Before you start
 
 - A **MemoryBase account** ([sign up here](https://dashboard.memorybase.app/sign-in))
-- **Node.js 18+** ([download here](https://nodejs.org) -- choose "LTS")
+- **Node.js 18+** ([download here](https://nodejs.org) — choose "LTS")
+- **OpenClaw** or **Hermes Agent** installed and running
 
-## Install and sign in
+## Option 1: Ask your agent to install (easiest)
+
+If your agent is already running, just tell it to set up MemoryBase. Paste this into your chat:
+
+<Tabs>
+  <Tab title="OpenClaw">
+    ```
+    Install MemoryBase so you can access my conversation history and past decisions.
+
+    MemoryBase is an npm package that provides an MCP server for persistent memory.
+    Website: https://memorybase.app
+    Package: https://www.npmjs.com/package/memorybase
+
+    Steps:
+    1. Run: npm install -g memorybase
+    2. Run: memorybase login (this will open my browser so I can authenticate)
+    3. Add this to your MCP config at ~/.openclaw/openclaw.json:
+    {
+      "mcpServers": {
+        "memorybase": {
+          "command": "npx",
+          "args": ["-y", "memorybase", "mcp"]
+        }
+      }
+    }
+    4. Restart your gateway to load the new MCP server.
+    ```
+
+    Your agent will walk you through the login flow and configure itself.
+  </Tab>
+  <Tab title="Hermes Agent">
+    ```
+    Install MemoryBase so you can access my conversation history and past decisions.
+
+    MemoryBase is an npm package that provides an MCP server for persistent memory.
+    Website: https://memorybase.app
+    Package: https://www.npmjs.com/package/memorybase
+
+    Steps:
+    1. Run: npm install -g memorybase
+    2. Run: memorybase login (this will open my browser so I can authenticate)
+    3. Add this to your MCP config at ~/.hermes/config.yaml:
+    mcp_servers:
+      memorybase:
+        type: stdio
+        command: npx
+        args: ["-y", "memorybase", "mcp"]
+    4. Restart to load the new MCP server.
+    ```
+
+    Your agent will walk you through the login flow and configure itself.
+  </Tab>
+</Tabs>
+
+Once done, test it by asking:
+
+```
+What do you know about my recent conversations?
+```
+
+## Option 2: Manual setup
+
+If you prefer to set things up yourself, run these commands on the **machine where your agent is running**:
 
 <Steps>
-  <Step title="Install the CLI">
+  <Step title="Install the MemoryBase CLI">
     ```bash
     npm install -g memorybase
     ```
   </Step>
-  <Step title="Sign in">
+  <Step title="Sign in to your account">
     ```bash
     memorybase login
     ```
     This opens your browser. Sign in with your MemoryBase account.
   </Step>
-  <Step title="Test it">
-    ```bash
-    memorybase search "my recent projects"
+  <Step title="Add MemoryBase to your agent's MCP config">
+    <Tabs>
+      <Tab title="OpenClaw">
+        Edit `~/.openclaw/openclaw.json` and add under `mcpServers`:
+
+        ```json
+        {
+          "mcpServers": {
+            "memorybase": {
+              "command": "npx",
+              "args": ["-y", "memorybase", "mcp"]
+            }
+          }
+        }
+        ```
+
+        Restart your OpenClaw gateway to pick up the new server.
+
+        Optionally, reference MemoryBase in your `SOUL.md`:
+
+        ```markdown
+        ## Memory
+
+        You have access to my conversation history via the MemoryBase MCP server.
+        Use `search_memory` to find relevant past discussions before starting new tasks.
+        Use `get_project_context` to load full project context when working on known projects.
+        ```
+      </Tab>
+      <Tab title="Hermes Agent">
+        Edit `~/.hermes/config.yaml` and add:
+
+        ```yaml
+        mcp_servers:
+          memorybase:
+            type: stdio
+            command: npx
+            args: ["-y", "memorybase", "mcp"]
+        ```
+
+        Hermes discovers MemoryBase tools on next startup.
+
+        To limit which tools are exposed, use tool filtering:
+
+        ```yaml
+        mcp_servers:
+          memorybase:
+            type: stdio
+            command: npx
+            args: ["-y", "memorybase", "mcp"]
+            include:
+              - search_memory
+              - get_project_context
+              - get_timeline
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+  <Step title="Verify">
+    Ask your agent:
     ```
-    You should see results from your conversation history.
+    What do you know about my recent conversations?
+    ```
+    It should return results from your conversation history.
   </Step>
 </Steps>
 
-See the full [CLI Reference](/cli/overview) for all available commands.
+## Available tools
+
+Once connected, your agent has access to these MCP tools:
+
+| Tool | Description |
+|---|---|
+| `search_memory` | Semantic search across all conversations and projects |
+| `search_text` | Full-text keyword search |
+| `get_project_context` | Load a project's full context pack |
+| `list_projects` | List all projects |
+| `list_conversations` | List recent conversations |
+| `get_conversation` | Get a specific conversation |
+| `get_timeline` | Browse timeline entries |
+| `get_timeline_for_date` | View a specific day's activity |
+| `memory_status` | Check indexing status |
+
+See the [MCP tools reference](/mcp/overview) for full details on each tool.

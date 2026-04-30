@@ -26,18 +26,20 @@ description: "Connect MemoryBase to Claude Code or Codex in under 2 minutes."
     This opens your browser. Sign in with your MemoryBase account.
   </Step>
 
-  <Step title="Connect to Claude Code">
-    ```bash
-    claude mcp add memorybase -- npx -y memorybase mcp
-    ```
-    That's it. Claude Code can now access your memory.
-
-    <Accordion title="Using Codex instead?">
-      Add the following as a "stdio" type MCP server in your Codex configuration:
-      ```bash
-      npx -y memorybase mcp
-      ```
-    </Accordion>
+  <Step title="Connect to your coding tool">
+    <Tabs>
+      <Tab title="Claude Code">
+        ```bash
+        claude mcp add memorybase -- npx -y memorybase mcp
+        ```
+      </Tab>
+      <Tab title="Codex">
+        ```bash
+        codex mcp add memorybase -- npx -y memorybase mcp
+        ```
+      </Tab>
+    </Tabs>
+    That's it. Your coding tool can now access your memory.
   </Step>
 
   <Step title="Verify it works">

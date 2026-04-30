@@ -71,13 +71,18 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["cli/overview"]
+            "pages": ["cli/overview", "cli/installation"]
+          },
+          {
+            "group": "Authentication",
+            "pages": ["cli/login", "cli/logout", "cli/whoami"]
           },
           {
             "group": "Commands",
             "pages": [
               "cli/search",
               "cli/projects",
+              "cli/project",
               "cli/timeline",
               "cli/status",
               "cli/mcp"

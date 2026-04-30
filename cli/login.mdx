@@ -1,0 +1,24 @@
+---
+title: "login"
+description: "Sign in to MemoryBase via browser using OAuth 2.0 device authorization flow."
+---
+
+```bash
+memorybase login [options]
+```
+
+Opens your browser to sign in with your MemoryBase account. Once complete, the CLI stores your session locally so you don't need to sign in again.
+
+## Options
+
+| Option | Description |
+|---|---|
+| `--server <url>` | Use a different backend server (advanced) |
+
+## Example
+
+```bash
+memorybase login
+```
+
+The CLI will display a URL and a code. Your browser opens automatically — confirm the code to complete sign-in.
