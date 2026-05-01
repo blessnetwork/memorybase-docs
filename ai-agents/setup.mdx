@@ -19,12 +19,14 @@ If your agent is already running, just tell it to set up MemoryBase. Paste this 
     Install MemoryBase so you can access my conversation history and past decisions.
 
     MemoryBase is an npm package that provides an MCP server for persistent memory.
-    Website: https://memorybase.app
     Package: https://www.npmjs.com/package/memorybase
 
     Steps:
     1. Run: npm install -g memorybase
-    2. Run: memorybase login (this will open my browser so I can authenticate)
+    2. Run: memorybase login
+       It will print a URL and a code. Send me the URL and code so I can
+       authenticate from my browser. Wait for the command to complete before
+       moving on.
     3. Add this to your MCP config at ~/.openclaw/openclaw.json:
     {
       "mcpServers": {
@@ -35,21 +37,42 @@ If your agent is already running, just tell it to set up MemoryBase. Paste this 
       }
     }
     4. Restart your gateway to load the new MCP server.
-    ```
 
-    Your agent will walk you through the login flow and configure itself.
+    After setup, the MCP server gives you these tools:
+    - search_memory(query) — semantic search across my conversations
+    - search_text(query) — full-text keyword search
+    - list_projects() — list all projects
+    - get_project_context(project_id) — get a project's full context
+    - list_conversations() — list recent conversations
+    - get_conversation(conversation_id) — get a specific conversation
+    - get_timeline() — browse timeline entries
+    - get_timeline_for_date(date) — view a specific day
+    - memory_status() — check indexing status
+
+    You also have CLI commands for quick access:
+    - memorybase search "<query>" — search memory from the terminal
+    - memorybase projects list — list all projects
+    - memorybase project <id> --pack — export a project's full context
+    - memorybase timeline list — browse recent activity
+    - memorybase timeline show <date> — view a specific day
+    - memorybase status — check indexing status
+
+    After restarting, verify by running: memorybase status
+    ```
   </Tab>
   <Tab title="Hermes Agent">
     ```
     Install MemoryBase so you can access my conversation history and past decisions.
 
     MemoryBase is an npm package that provides an MCP server for persistent memory.
-    Website: https://memorybase.app
     Package: https://www.npmjs.com/package/memorybase
 
     Steps:
     1. Run: npm install -g memorybase
-    2. Run: memorybase login (this will open my browser so I can authenticate)
+    2. Run: memorybase login
+       It will print a URL and a code. Send me the URL and code so I can
+       authenticate from my browser. Wait for the command to complete before
+       moving on.
     3. Add this to your MCP config at ~/.hermes/config.yaml:
     mcp_servers:
       memorybase:
@@ -57,9 +80,28 @@ If your agent is already running, just tell it to set up MemoryBase. Paste this 
         command: npx
         args: ["-y", "memorybase", "mcp"]
     4. Restart to load the new MCP server.
-    ```
 
-    Your agent will walk you through the login flow and configure itself.
+    After setup, the MCP server gives you these tools:
+    - search_memory(query) — semantic search across my conversations
+    - search_text(query) — full-text keyword search
+    - list_projects() — list all projects
+    - get_project_context(project_id) — get a project's full context
+    - list_conversations() — list recent conversations
+    - get_conversation(conversation_id) — get a specific conversation
+    - get_timeline() — browse timeline entries
+    - get_timeline_for_date(date) — view a specific day
+    - memory_status() — check indexing status
+
+    You also have CLI commands for quick access:
+    - memorybase search "<query>" — search memory from the terminal
+    - memorybase projects list — list all projects
+    - memorybase project <id> --pack — export a project's full context
+    - memorybase timeline list — browse recent activity
+    - memorybase timeline show <date> — view a specific day
+    - memorybase status — check indexing status
+
+    After restarting, verify by running: memorybase status
+    ```
   </Tab>
 </Tabs>
 
